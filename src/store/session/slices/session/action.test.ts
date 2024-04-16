@@ -1,8 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { INBOX_SESSION_ID } from '@/const/session';
 import { SESSION_CHAT_URL } from '@/const/url';
 import { sessionService } from '@/services/session';
 import { useSessionStore } from '@/store/session';
@@ -12,11 +10,12 @@ import { LobeSessionType } from '@/types/session';
 vi.mock('@/services/session', () => ({
   sessionService: {
     removeAllSessions: vi.fn(),
-    createNewSession: vi.fn(),
-    duplicateSession: vi.fn(),
+    createSession: vi.fn(),
+    cloneSession: vi.fn(),
     updateSessionGroup: vi.fn(),
     removeSession: vi.fn(),
-    getSessions: vi.fn(),
+    getAllSessions: vi.fn(),
+    updateSession: vi.fn(),
     updateSessionGroupId: vi.fn(),
     searchSessions: vi.fn(),
     updateSessionPinned: vi.fn(),
@@ -31,9 +30,6 @@ beforeEach(() => {
   vi.clearAllMocks();
   useSessionStore.setState({
     refreshSessions: mockRefresh,
-    router: {
-      push: mockRouterPush,
-    } as unknown as AppRouterInstance,
   });
 });
 
@@ -59,7 +55,7 @@ describe('SessionAction', () => {
     it('should create a new session and switch to it', async () => {
       const { result } = renderHook(() => useSessionStore());
       const newSessionId = 'new-session-id';
-      vi.mocked(sessionService.createNewSession).mockResolvedValue(newSessionId);
+      vi.mocked(sessionService.createSession).mockResolvedValue(newSessionId);
 
       let createdSessionId;
 
@@ -67,20 +63,17 @@ describe('SessionAction', () => {
         createdSessionId = await result.current.createSession({ config: { displayMode: 'docs' } });
       });
 
-      const call = vi.mocked(sessionService.createNewSession).mock.calls[0];
+      const call = vi.mocked(sessionService.createSession).mock.calls[0];
       expect(call[0]).toEqual(LobeSessionType.Agent);
       expect(call[1]).toMatchObject({ config: { displayMode: 'docs' } });
 
       expect(createdSessionId).toBe(newSessionId);
-      expect(mockRouterPush).toHaveBeenCalledWith(
-        SESSION_CHAT_URL(newSessionId, result.current.isMobile),
-      );
     });
 
     it('should create a new session but not switch to it if isSwitchSession is false', async () => {
       const { result } = renderHook(() => useSessionStore());
       const newSessionId = 'new-session-id';
-      vi.mocked(sessionService.createNewSession).mockResolvedValue(newSessionId);
+      vi.mocked(sessionService.createSession).mockResolvedValue(newSessionId);
 
       let createdSessionId;
 
@@ -91,7 +84,7 @@ describe('SessionAction', () => {
         );
       });
 
-      const call = vi.mocked(sessionService.createNewSession).mock.calls[0];
+      const call = vi.mocked(sessionService.createSession).mock.calls[0];
       expect(call[0]).toEqual(LobeSessionType.Agent);
       expect(call[1]).toMatchObject({ config: { displayMode: 'docs' } });
 
@@ -102,18 +95,18 @@ describe('SessionAction', () => {
     });
   });
 
-  describe('duplicateSession', () => {
+  describe('cloneSession', () => {
     it('should duplicate a session and switch to the new one', async () => {
       const { result } = renderHook(() => useSessionStore());
       const sessionId = 'session-id';
       const duplicatedSessionId = 'duplicated-session-id';
-      vi.mocked(sessionService.duplicateSession).mockResolvedValue(duplicatedSessionId);
+      vi.mocked(sessionService.cloneSession).mockResolvedValue(duplicatedSessionId);
 
       await act(async () => {
         await result.current.duplicateSession(sessionId);
       });
 
-      expect(sessionService.duplicateSession).toHaveBeenCalledWith(sessionId, undefined);
+      expect(sessionService.cloneSession).toHaveBeenCalledWith(sessionId, undefined);
     });
   });
 
@@ -128,35 +121,6 @@ describe('SessionAction', () => {
 
       expect(sessionService.removeSession).toHaveBeenCalledWith(sessionId);
       expect(mockRefresh).toHaveBeenCalled();
-    });
-  });
-
-  describe('switchSession', () => {
-    it('should switch to the provided session id', async () => {
-      const { result } = renderHook(() => useSessionStore());
-      const sessionId = 'session-id';
-
-      act(() => {
-        result.current.switchSession(sessionId);
-      });
-
-      expect(result.current.activeId).toBe(sessionId);
-      expect(mockRouterPush).toHaveBeenCalledWith(
-        SESSION_CHAT_URL(sessionId, result.current.isMobile),
-      );
-    });
-
-    it('should switch to the inbox session id if none is provided', async () => {
-      const { result } = renderHook(() => useSessionStore());
-
-      act(() => {
-        result.current.switchSession();
-      });
-
-      expect(result.current.activeId).toBe(INBOX_SESSION_ID);
-      expect(mockRouterPush).toHaveBeenCalledWith(
-        SESSION_CHAT_URL(INBOX_SESSION_ID, result.current.isMobile),
-      );
     });
   });
 
@@ -182,7 +146,7 @@ describe('SessionAction', () => {
         await result.current.pinSession(sessionId, true);
       });
 
-      expect(sessionService.updateSessionPinned).toHaveBeenCalledWith(sessionId, true);
+      expect(sessionService.updateSession).toHaveBeenCalledWith(sessionId, { pinned: true });
       expect(mockRefresh).toHaveBeenCalled();
     });
 
@@ -194,7 +158,7 @@ describe('SessionAction', () => {
         await result.current.pinSession(sessionId, false);
       });
 
-      expect(sessionService.updateSessionPinned).toHaveBeenCalledWith(sessionId, false);
+      expect(sessionService.updateSession).toHaveBeenCalledWith(sessionId, { pinned: false });
       expect(mockRefresh).toHaveBeenCalled();
     });
   });
@@ -209,7 +173,7 @@ describe('SessionAction', () => {
         await result.current.updateSessionGroupId(sessionId, groupId);
       });
 
-      expect(sessionService.updateSessionGroupId).toHaveBeenCalledWith(sessionId, groupId);
+      expect(sessionService.updateSession).toHaveBeenCalledWith(sessionId, { group: groupId });
       expect(mockRefresh).toHaveBeenCalled();
     });
   });
