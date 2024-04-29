@@ -2,6 +2,56 @@
 
 # Changelog
 
+### [Version 0.151.3](https://github.com/lobehub/lobe-chat/compare/v0.151.2...v0.151.3)
+
+<sup>Released on **2024-04-29**</sup>
+
+#### 💄 Styles
+
+- **misc**: Patching models info.
+
+<br/>
+
+<details>
+<summary><kbd>Improvements and Fixes</kbd></summary>
+
+#### Styles
+
+- **misc**: Patching models info, closes [#2269](https://github.com/lobehub/lobe-chat/issues/2269) [#22802280](https://github.com/lobehub/lobe-chat/issues/22802280) ([03bcb06](https://github.com/lobehub/lobe-chat/commit/03bcb06))
+
+</details>
+
+<div align="right">
+
+[![](https://img.shields.io/badge/-BACK_TO_TOP-151515?style=flat-square)](#readme-top)
+
+</div>
+
+### [Version 0.151.2](https://github.com/lobehub/lobe-chat/compare/v0.151.1...v0.151.2)
+
+<sup>Released on **2024-04-29**</sup>
+
+#### 🐛 Bug Fixes
+
+- **misc**: Fix only inject welcome question in inbox.
+
+<br/>
+
+<details>
+<summary><kbd>Improvements and Fixes</kbd></summary>
+
+#### What's fixed
+
+- **misc**: Fix only inject welcome question in inbox, closes [#2289](https://github.com/lobehub/lobe-chat/issues/2289) ([cc8edd3](https://github.com/lobehub/lobe-chat/commit/cc8edd3))
+
+</details>
+
+<div align="right">
+
+[![](https://img.shields.io/badge/-BACK_TO_TOP-151515?style=flat-square)](#readme-top)
+
+</div>
+
 ### [Version 0.151.1](https://github.com/lobehub/lobe-chat/compare/v0.151.0...v0.151.1)
 
 <sup>Released on **2024-04-29**</sup>
