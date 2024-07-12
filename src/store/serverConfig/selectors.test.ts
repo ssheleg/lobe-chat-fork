@@ -17,7 +17,7 @@ describe('featureFlagsSelectors', () => {
     const result = featureFlagsSelectors(store.getState());
 
     expect(result).toEqual({
-      enableWebrtc: true,
+      enableWebrtc: false,
       isAgentEditable: false,
       showCreateSession: true,
       showDalle: true,
@@ -26,6 +26,7 @@ describe('featureFlagsSelectors', () => {
       showOpenAIProxyUrl: true,
       enableCheckUpdates: true,
       showWelcomeSuggest: true,
+      enableClerkSignUp: true,
     });
   });
 });

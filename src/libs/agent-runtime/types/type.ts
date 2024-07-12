@@ -24,6 +24,7 @@ export interface CreateChatCompletionOptions {
 export enum ModelProvider {
   Anthropic = 'anthropic',
   Azure = 'azure',
+  Baichuan = 'baichuan',
   Bedrock = 'bedrock',
   DeepSeek = 'deepseek',
   Google = 'google',
@@ -36,6 +37,8 @@ export enum ModelProvider {
   OpenRouter = 'openrouter',
   Perplexity = 'perplexity',
   Qwen = 'qwen',
+  Stepfun = 'stepfun',
+  Taichu = 'taichu',
   TogetherAI = 'togetherai',
   ZeroOne = 'zeroone',
   ZhiPu = 'zhipu',
