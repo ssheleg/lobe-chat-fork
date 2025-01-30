@@ -92,14 +92,14 @@ describe('LLMSettingsSliceAction', () => {
                   displayName: 'ChatGPT-4',
                   functionCall: true,
                   id: 'gpt-4-0125-preview',
-                  tokens: 128000,
+                  contextWindowTokens: 128000,
                   enabled: true,
                 },
                 {
                   displayName: 'ChatGPT-4 Vision',
                   functionCall: true,
                   id: 'gpt-4-turbo-2024-04-09',
-                  tokens: 128000,
+                  contextWindowTokens: 128000,
                   vision: true,
                   enabled: true,
                 },
@@ -121,14 +121,14 @@ describe('LLMSettingsSliceAction', () => {
           enabled: true,
           functionCall: true,
           id: 'gpt-4-0125-preview',
-          tokens: 128000,
+          contextWindowTokens: 128000,
         },
         {
           displayName: 'ChatGPT-4 Vision',
           enabled: true,
           functionCall: true,
           id: 'gpt-4-turbo-2024-04-09',
-          tokens: 128000,
+          contextWindowTokens: 128000,
           vision: true,
         },
       ]);
@@ -154,13 +154,9 @@ describe('LLMSettingsSliceAction', () => {
 
       const ollamaList = result.current.modelProviderList.find((r) => r.id === 'ollama');
       // Assert that setModelProviderConfig was not called
-      expect(ollamaList?.chatModels.find((c) => c.id === 'llava')).toEqual({
-        displayName: 'LLaVA 7B',
-        enabled: true,
-        id: 'llava',
-        tokens: 4096,
-        vision: true,
-      });
+      const model = ollamaList?.chatModels.find((c) => c.id === 'llava');
+
+      expect(model).toMatchSnapshot();
     });
 
     it('modelProviderListForModelSelect should return only enabled providers', () => {

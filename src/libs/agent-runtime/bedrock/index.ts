@@ -1,12 +1,20 @@
 import {
   BedrockRuntimeClient,
+  InvokeModelCommand,
   InvokeModelWithResponseStreamCommand,
 } from '@aws-sdk/client-bedrock-runtime';
 import { experimental_buildLlama2Prompt } from 'ai/prompts';
 
 import { LobeRuntimeAI } from '../BaseAI';
 import { AgentRuntimeErrorType } from '../error';
-import { ChatCompetitionOptions, ChatStreamPayload, ModelProvider } from '../types';
+import {
+  ChatCompetitionOptions,
+  ChatStreamPayload,
+  Embeddings,
+  EmbeddingsOptions,
+  EmbeddingsPayload,
+  ModelProvider,
+} from '../types';
 import { buildAnthropicMessages, buildAnthropicTools } from '../utils/anthropicHelpers';
 import { AgentRuntimeError } from '../utils/createError';
 import { debugStream } from '../utils/debugStream';
@@ -21,6 +29,7 @@ export interface LobeBedrockAIParams {
   accessKeyId?: string;
   accessKeySecret?: string;
   region?: string;
+  sessionToken?: string;
 }
 
 export class LobeBedrockAI implements LobeRuntimeAI {
@@ -28,16 +37,15 @@ export class LobeBedrockAI implements LobeRuntimeAI {
 
   region: string;
 
-  constructor({ region, accessKeyId, accessKeySecret }: LobeBedrockAIParams = {}) {
+  constructor({ region, accessKeyId, accessKeySecret, sessionToken }: LobeBedrockAIParams = {}) {
     if (!(accessKeyId && accessKeySecret))
       throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidBedrockCredentials);
-
     this.region = region ?? 'us-east-1';
-
     this.client = new BedrockRuntimeClient({
       credentials: {
         accessKeyId: accessKeyId,
         secretAccessKey: accessKeySecret,
+        sessionToken: sessionToken,
       },
       region: this.region,
     });
@@ -48,6 +56,61 @@ export class LobeBedrockAI implements LobeRuntimeAI {
 
     return this.invokeClaudeModel(payload, options);
   }
+  /**
+   * Supports the Amazon Titan Text models series.
+   * Cohere Embed models are not supported
+   * because the current text size per request
+   * exceeds the maximum 2048 characters limit
+   * for a single request for this series of models.
+   * [bedrock embed guide] https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-embed.html
+   */
+  async embeddings(payload: EmbeddingsPayload, options?: EmbeddingsOptions): Promise<Embeddings[]> {
+    const input = Array.isArray(payload.input) ? payload.input : [payload.input];
+    const promises = input.map((inputText: string) =>
+      this.invokeEmbeddingModel(
+        {
+          dimensions: payload.dimensions,
+          input: inputText,
+          model: payload.model,
+        },
+        options,
+      ),
+    );
+    return Promise.all(promises);
+  }
+
+  private invokeEmbeddingModel = async (
+    payload: EmbeddingsPayload,
+    options?: EmbeddingsOptions,
+  ): Promise<Embeddings> => {
+    const command = new InvokeModelCommand({
+      accept: 'application/json',
+      body: JSON.stringify({
+        dimensions: payload.dimensions,
+        inputText: payload.input,
+        normalize: true,
+      }),
+      contentType: 'application/json',
+      modelId: payload.model,
+    });
+    try {
+      const res = await this.client.send(command, { abortSignal: options?.signal });
+      const responseBody = JSON.parse(new TextDecoder().decode(res.body));
+      return responseBody.embedding;
+    } catch (e) {
+      const err = e as Error & { $metadata: any };
+      throw AgentRuntimeError.chat({
+        error: {
+          body: err.$metadata,
+          message: err.message,
+          type: err.name,
+        },
+        errorType: AgentRuntimeErrorType.ProviderBizError,
+        provider: ModelProvider.Bedrock,
+        region: this.region,
+      });
+    }
+  };
 
   private invokeClaudeModel = async (
     payload: ChatStreamPayload,
@@ -62,9 +125,9 @@ export class LobeBedrockAI implements LobeRuntimeAI {
       body: JSON.stringify({
         anthropic_version: 'bedrock-2023-05-31',
         max_tokens: max_tokens || 4096,
-        messages: buildAnthropicMessages(user_messages),
+        messages: await buildAnthropicMessages(user_messages),
         system: system_message?.content as string,
-        temperature: temperature,
+        temperature: temperature / 2,
         tools: buildAnthropicTools(tools),
         top_p: top_p,
       }),

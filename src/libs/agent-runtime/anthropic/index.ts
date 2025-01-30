@@ -13,23 +13,34 @@ import { buildAnthropicMessages, buildAnthropicTools } from '../utils/anthropicH
 import { StreamingResponse } from '../utils/response';
 import { AnthropicStream } from '../utils/streams';
 
+import { LOBE_DEFAULT_MODEL_LIST } from '@/config/aiModels';
+import type { ChatModelCard } from '@/types/llm';
+
+export interface AnthropicModelCard {
+  display_name: string;
+  id: string;
+}
+
 const DEFAULT_BASE_URL = 'https://api.anthropic.com';
 
 export class LobeAnthropicAI implements LobeRuntimeAI {
   private client: Anthropic;
 
   baseURL: string;
+  apiKey?: string;
 
-  constructor({ apiKey, baseURL = DEFAULT_BASE_URL }: ClientOptions = {}) {
+  constructor({ apiKey, baseURL = DEFAULT_BASE_URL, ...res }: ClientOptions = {}) {
     if (!apiKey) throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidProviderAPIKey);
 
-    this.client = new Anthropic({ apiKey, baseURL });
+    this.client = new Anthropic({ apiKey, baseURL, ...res });
     this.baseURL = this.client.baseURL;
+    this.apiKey = apiKey;
   }
 
   async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions) {
     try {
-      const anthropicPayload = this.buildAnthropicPayload(payload);
+      const anthropicPayload = await this.buildAnthropicPayload(payload);
+
       const response = await this.client.messages.create(
         { ...anthropicPayload, stream: true },
         {
@@ -86,20 +97,46 @@ export class LobeAnthropicAI implements LobeRuntimeAI {
     }
   }
 
-  private buildAnthropicPayload(payload: ChatStreamPayload) {
+  private async buildAnthropicPayload(payload: ChatStreamPayload) {
     const { messages, model, max_tokens = 4096, temperature, top_p, tools } = payload;
     const system_message = messages.find((m) => m.role === 'system');
     const user_messages = messages.filter((m) => m.role !== 'system');
 
     return {
       max_tokens,
-      messages: buildAnthropicMessages(user_messages),
+      messages: await buildAnthropicMessages(user_messages),
       model,
       system: system_message?.content as string,
-      temperature,
+      temperature: payload.temperature !== undefined ? temperature / 2 : undefined,
       tools: buildAnthropicTools(tools),
       top_p,
     } satisfies Anthropic.MessageCreateParams;
+  }
+
+  async models() {
+    const url = `${this.baseURL}/v1/models`;
+    const response = await fetch(url, {
+      headers: {
+        'anthropic-version': '2023-06-01',
+        'x-api-key': `${this.apiKey}`,
+      },
+      method: 'GET',
+    });
+    const json = await response.json();
+  
+    const modelList: AnthropicModelCard[] = json['data'];
+  
+    return modelList
+      .map((model) => {
+        return {
+          displayName: model.display_name,
+          enabled: LOBE_DEFAULT_MODEL_LIST.find((m) => model.id.endsWith(m.id))?.enabled || false,
+          functionCall: model.id.toLowerCase().includes('claude-3'),
+          id: model.id,
+          vision: model.id.toLowerCase().includes('claude-3') && !model.id.toLowerCase().includes('claude-3-5-haiku'),
+        };
+      })
+      .filter(Boolean) as ChatModelCard[];
   }
 }
 

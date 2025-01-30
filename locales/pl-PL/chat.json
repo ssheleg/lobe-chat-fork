@@ -2,11 +2,21 @@
   "ModelSwitch": {
     "title": "Przełącz model"
   },
-  "agentDefaultMessage": "Cześć, jestem **{{name}}**, możesz od razu zacząć ze mną rozmawiać, lub udoskonalić moje informacje, przechodząc do [Ustawień asystenta](/chat/settings#session={{id}}).",
+  "agentDefaultMessage": "Cześć, jestem **{{name}}**, możesz od razu rozpocząć ze mną rozmowę lub przejść do [ustawień asystenta]({{url}}), aby uzupełnić moje informacje.",
   "agentDefaultMessageWithSystemRole": "Cześć, jestem **{{name}}**, {{systemRole}}, zacznijmy rozmowę!",
   "agentDefaultMessageWithoutEdit": "Cześć, jestem **{{name}}**. Zacznijmy rozmowę!",
-  "agentsAndConversations": "Agenci i rozmowy",
+  "agents": "Asystent",
+  "artifact": {
+    "generating": "Generowanie",
+    "inThread": "Nie można przeglądać w wątku, przełącz się na główny obszar rozmowy, aby otworzyć",
+    "thinking": "Myślenie",
+    "thought": "Proces myślenia",
+    "unknownTitle": "Nienazwane dzieło"
+  },
   "backToBottom": "Przewiń na dół",
+  "chatList": {
+    "longMessageDetail": "Zobacz szczegóły"
+  },
   "clearCurrentMessages": "Wyczyść bieżącą rozmowę",
   "confirmClearCurrentMessages": "Czy na pewno chcesz wyczyścić bieżącą rozmowę? Tej operacji nie można cofnąć.",
   "confirmRemoveSessionItemAlert": "Czy na pewno chcesz usunąć tego asystenta? Tej operacji nie można cofnąć.",
@@ -22,6 +32,7 @@
   "duplicateTitle": "{{title}} kopia",
   "emptyAgent": "Brak asystenta",
   "historyRange": "Zakres historii",
+  "historySummary": "Podsumowanie wiadomości historycznych",
   "inbox": {
     "desc": "Włącz klastry mózgów, rozpal iskrę myślenia. Twój inteligentny asystent, gotowy do rozmowy o wszystkim.",
     "title": "Pogadajmy sobie"
@@ -36,16 +47,44 @@
     "stop": "Zatrzymaj",
     "warp": "Złamanie wiersza"
   },
+  "knowledgeBase": {
+    "all": "Wszystkie treści",
+    "allFiles": "Wszystkie pliki",
+    "allKnowledgeBases": "Wszystkie bazy wiedzy",
+    "disabled": "Obecny tryb wdrożenia nie obsługuje rozmów z bazą wiedzy. Aby z niej skorzystać, przełącz się na wdrożenie z bazą danych serwera lub skorzystaj z usługi {{cloud}}.",
+    "library": {
+      "action": {
+        "add": "Dodaj",
+        "detail": "Szczegóły",
+        "remove": "Usuń"
+      },
+      "title": "Plik/Baza wiedzy"
+    },
+    "relativeFilesOrKnowledgeBases": "Powiązane pliki/bazy wiedzy",
+    "title": "Baza wiedzy",
+    "uploadGuide": "Przesłane pliki można przeglądać w „Bazie wiedzy”",
+    "viewMore": "Zobacz więcej"
+  },
   "messageAction": {
     "delAndRegenerate": "Usuń i wygeneruj ponownie",
+    "deleteDisabledByThreads": "Istnieją podwątki, nie można usunąć",
     "regenerate": "Wygeneruj ponownie"
   },
   "newAgent": "Nowy asystent",
   "pin": "Przypnij",
   "pinOff": "Odepnij",
+  "rag": {
+    "referenceChunks": "Fragmenty odniesienia",
+    "userQuery": {
+      "actions": {
+        "delete": "Usuń przepisanie zapytania",
+        "regenerate": "Ponownie wygeneruj zapytanie"
+      }
+    }
+  },
   "regenerate": "Wygeneruj ponownie",
   "roleAndArchive": "Rola i archiwum",
-  "searchAgentPlaceholder": "Szukaj asystentów i rozmów...",
+  "searchAgentPlaceholder": "Wyszukaj pomocnika...",
   "sendPlaceholder": "Wpisz treść rozmowy...",
   "sessionGroup": {
     "config": "Zarządzanie grupami",
@@ -64,14 +103,20 @@
     "tooLong": "Nazwa grupy musi mieć od 1 do 20 znaków"
   },
   "shareModal": {
+    "copy": "Kopiuj",
     "download": "Pobierz zrzut ekranu",
+    "downloadFile": "Pobierz plik",
+    "exportTitle": "Domyślny tytuł",
     "imageType": "Typ obrazu",
+    "includeTool": "Uwzględnij wiadomości z narzędzi",
+    "includeUser": "Uwzględnij wiadomości od użytkowników",
     "screenshot": "Zrzut ekranu",
     "settings": "Ustawienia eksportu",
-    "shareToShareGPT": "Generuj link udostępniania ShareGPT",
+    "text": "Tekst",
     "withBackground": "Z tłem",
     "withFooter": "Z stopką",
     "withPluginInfo": "Z informacjami o wtyczce",
+    "withRole": "Uwzględnij rolę wiadomości",
     "withSystemRole": "Z rolą asystenta"
   },
   "stt": {
@@ -79,9 +124,14 @@
     "loading": "Rozpoznawanie...",
     "prettifying": "Upiększanie..."
   },
-  "temp": "Tymczasowy",
+  "thread": {
+    "divider": "Podwątek",
+    "threadMessageCount": "{{messageCount}} wiadomości",
+    "title": "Podwątek"
+  },
   "tokenDetails": {
     "chats": "Rozmowy",
+    "historySummary": "Podsumowanie historii",
     "rest": "Pozostałe",
     "systemRole": "Rola systemowa",
     "title": "Szczegóły tokena",
@@ -95,29 +145,10 @@
     "used": "Użyte"
   },
   "topic": {
-    "actions": {
-      "autoRename": "Automatyczna zmiana nazwy",
-      "duplicate": "Utwórz kopię",
-      "export": "Eksportuj temat"
-    },
     "checkOpenNewTopic": "Czy otworzyć nowy temat?",
     "checkSaveCurrentMessages": "Czy zapisać bieżącą rozmowę jako temat?",
-    "confirmRemoveAll": "Czy na pewno chcesz usunąć wszystkie tematy? Tej operacji nie można cofnąć. Proszę potwierdź swoją decyzję.",
-    "confirmRemoveTopic": "Czy na pewno chcesz usunąć ten temat? Tej operacji nie można cofnąć. Proszę potwierdź swoją decyzję.",
-    "confirmRemoveUnstarred": "Czy na pewno chcesz usunąć nieoznaczone tematy? Tej operacji nie można cofnąć. Proszę potwierdź swoją decyzję.",
-    "defaultTitle": "Domyślne tematy",
-    "duplicateLoading": "Kopiowanie tematu...",
-    "duplicateSuccess": "Temat został skopiowany pomyślnie",
-    "guide": {
-      "desc": "Kliknij przycisk po lewej stronie, aby zapisać bieżącą rozmowę jako historię tematu i rozpocząć nową rundę rozmowy",
-      "title": "Lista tematów"
-    },
     "openNewTopic": "Otwórz nowy temat",
-    "removeAll": "Usuń wszystkie tematy",
-    "removeUnstarred": "Usuń nieoznaczone tematy",
-    "saveCurrentMessages": "Zapisz bieżącą rozmowę jako temat",
-    "searchPlaceholder": "Szukaj tematów...",
-    "title": "Lista tematów"
+    "saveCurrentMessages": "Zapisz bieżącą rozmowę jako temat"
   },
   "translate": {
     "action": "Tłumaczenie",
@@ -129,8 +160,25 @@
   },
   "updateAgent": "Aktualizuj informacje asystenta",
   "upload": {
-    "actionFiletip": "Prześlij plik",
-    "actionTooltip": "Prześlij obraz",
-    "disabled": "Obecny model nie obsługuje rozpoznawania wizyjnego. Proszę przełączyć model."
-  }
+    "action": {
+      "fileUpload": "Prześlij plik",
+      "folderUpload": "Prześlij folder",
+      "imageDisabled": "Aktualny model nie obsługuje rozpoznawania wizualnego, przełącz się na inny model, aby użyć tej funkcji",
+      "imageUpload": "Prześlij obraz",
+      "tooltip": "Prześlij"
+    },
+    "clientMode": {
+      "actionFiletip": "Prześlij plik",
+      "actionTooltip": "Prześlij",
+      "disabled": "Aktualny model nie obsługuje rozpoznawania wizualnego i analizy plików, przełącz się na inny model, aby użyć tej funkcji"
+    },
+    "preview": {
+      "prepareTasks": "Przygotowywanie fragmentów...",
+      "status": {
+        "pending": "Przygotowywanie do przesłania...",
+        "processing": "Przetwarzanie pliku..."
+      }
+    }
+  },
+  "zenMode": "Tryb skupienia"
 }

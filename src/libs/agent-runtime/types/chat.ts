@@ -72,6 +72,8 @@ export interface ChatStreamPayload {
    * @default openai
    */
   provider?: string;
+
+  responseMode?: 'streamText' | 'json';
   /**
    * @title 是否开启流式请求
    * @default true
@@ -79,11 +81,12 @@ export interface ChatStreamPayload {
   stream?: boolean;
   /**
    * @title 生成文本的随机度量，用于控制文本的创造性和多样性
-   * @default 0.5
+   * @default 1
    */
   temperature: number;
   tool_choice?: string;
   tools?: ChatCompletionTool[];
+
   /**
    * @title 控制生成文本中最高概率的单个令牌
    * @default 1
@@ -93,7 +96,14 @@ export interface ChatStreamPayload {
 
 export interface ChatCompetitionOptions {
   callback?: ChatStreamCallbacks;
+  /**
+   * response headers
+   */
   headers?: Record<string, any>;
+  /**
+   * send the request to the ai api endpoint
+   */
+  requestHeaders?: Record<string, any>;
   signal?: AbortSignal;
   /**
    * userId for the chat completion

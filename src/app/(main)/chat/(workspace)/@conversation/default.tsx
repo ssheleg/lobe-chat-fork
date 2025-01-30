@@ -1,19 +1,21 @@
-import Conversation from '@/features/Conversation';
-import { isMobileDevice } from '@/utils/responsive';
+import { isMobileDevice } from '@/utils/server/responsive';
 
 import ChatHydration from './features/ChatHydration';
-import DesktopChatInput from './features/ChatInput/Desktop';
-import MobileChatInput from './features/ChatInput/Mobile';
+import ChatInput from './features/ChatInput';
+import ChatList from './features/ChatList';
+import ThreadHydration from './features/ThreadHydration';
+import ZenModeToast from './features/ZenModeToast';
 
-const ChatConversation = () => {
-  const mobile = isMobileDevice();
-  const ChatInput = mobile ? MobileChatInput : DesktopChatInput;
+const ChatConversation = async () => {
+  const mobile = await isMobileDevice();
 
   return (
     <>
-      <Conversation mobile={mobile} />
-      <ChatInput />
+      <ZenModeToast />
+      <ChatList mobile={mobile} />
+      <ChatInput mobile={mobile} />
       <ChatHydration />
+      <ThreadHydration />
     </>
   );
 };

@@ -1,6 +1,11 @@
 import { Metadata } from 'next';
+import qs from 'query-string';
 
-import { OG_URL, getCanonicalUrl } from '@/const/url';
+import { BRANDING_NAME } from '@/const/branding';
+import { DEFAULT_LANG } from '@/const/locale';
+import { OG_URL } from '@/const/url';
+import { Locales, locales } from '@/locales/resources';
+import { getCanonicalUrl } from '@/server/utils/url';
 import { formatDescLength, formatTitleLength } from '@/utils/genOG';
 
 export class Meta {
@@ -11,9 +16,15 @@ export class Meta {
     url,
     type = 'website',
     tags,
+    alternate,
+    locale = DEFAULT_LANG,
+    canonical,
   }: {
+    alternate?: boolean;
+    canonical?: string;
     description?: string;
     image?: string;
+    locale?: Locales;
     tags?: string[];
     title: string;
     type?: 'website' | 'article';
@@ -23,13 +34,20 @@ export class Meta {
     const formatedTitle = formatTitleLength(title, 21);
     // eslint-disable-next-line no-param-reassign
     const formatedDescription = formatDescLength(description, tags);
-    const siteTitle = title.includes('LobeChat') ? title : title + ' · LobeChat';
+    const siteTitle = title.includes(BRANDING_NAME) ? title : title + ` · ${BRANDING_NAME}`;
     return {
-      alternates: { canonical: getCanonicalUrl(url) },
+      alternates: {
+        canonical:
+          canonical ||
+          getCanonicalUrl(alternate ? qs.stringifyUrl({ query: { hl: locale }, url }) : url),
+        languages: alternate ? this.genAlternateLocales(locale, url) : undefined,
+      },
       description: formatedDescription,
       openGraph: this.genOpenGraph({
+        alternate,
         description,
         image,
+        locale,
         title: siteTitle,
         type,
         url,
@@ -41,6 +59,21 @@ export class Meta {
       twitter: this.genTwitter({ description, image, title: siteTitle, url }),
     };
   }
+
+  private genAlternateLocales = (locale: Locales, path: string = '/') => {
+    let links: any = {};
+    const defaultLink = getCanonicalUrl(path);
+    for (const alterLocales of locales) {
+      links[alterLocales] = qs.stringifyUrl({
+        query: { hl: alterLocales },
+        url: defaultLink,
+      });
+    }
+    return {
+      'x-default': defaultLink,
+      ...links,
+    };
+  };
 
   private genTwitter({
     description,
@@ -64,19 +97,23 @@ export class Meta {
   }
 
   private genOpenGraph({
+    alternate,
+    locale = DEFAULT_LANG,
     description,
     title,
     image,
     url,
     type = 'website',
   }: {
+    alternate?: boolean;
     description: string;
     image: string;
+    locale: Locales;
     title: string;
     type?: 'website' | 'article';
     url: string;
   }) {
-    return {
+    const data: any = {
       description,
       images: [
         {
@@ -84,12 +121,18 @@ export class Meta {
           url: image,
         },
       ],
-      locale: 'en-US',
+      locale,
       siteName: 'LobeChat',
       title,
       type,
       url,
     };
+
+    if (alternate) {
+      data['alternateLocale'] = locales;
+    }
+
+    return data;
   }
 }
 

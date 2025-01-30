@@ -12,7 +12,7 @@ export default {
   },
   analytics: {
     telemetry: {
-      desc: '通过选择发送遥测数据，你可以帮助我们改善 LobeChat 整体用户体验',
+      desc: '通过选择发送遥测数据，你可以帮助我们改善 {{appName}} 整体用户体验',
       title: '发送匿名使用数据',
     },
     title: '数据统计',
@@ -70,13 +70,12 @@ export default {
           title: '模型展示名称',
         },
         files: {
-          extra:
-            '当前 LobeChat 的文件上传实现仅为一种 Hack 方案，仅限自行尝试。完整文件上传能力请等待后续实现',
+          extra: '当前文件上传实现仅为一种 Hack 方案，仅限自行尝试。完整文件上传能力请等待后续实现',
           title: '支持文件上传',
         },
         functionCall: {
           extra:
-            '此配置将仅开启 LobeChat 中的函数调用能力，是否支持函数调用完全取决于模型本身，请自行测试该模型的函数调用能力可用性',
+            '此配置将仅开启应用中的函数调用能力，是否支持函数调用完全取决于模型本身，请自行测试该模型的函数调用能力可用性',
           title: '支持函数调用',
         },
         id: {
@@ -87,11 +86,10 @@ export default {
         modalTitle: '自定义模型配置',
         tokens: {
           title: '最大 token 数',
-          unlimited: '无限制',
         },
         vision: {
           extra:
-            '此配置将仅开启 LobeChat 中的图片上传配置，是否支持识别完全取决于模型本身，请自行测试该模型的视觉识别能力可用性',
+            '此配置将仅开启应用中的图片上传配置，是否支持识别完全取决于模型本身，请自行测试该模型的视觉识别能力可用性',
           title: '支持视觉识别',
         },
       },
@@ -101,6 +99,7 @@ export default {
       title: '使用客户端请求模式',
     },
     fetcher: {
+      clear: '清除获取的模型',
       fetch: '获取模型列表',
       fetching: '正在获取模型列表...',
       latestTime: '上次更新时间：{{time}}',
@@ -178,8 +177,8 @@ export default {
       desc: '会话过程中是否自动创建话题，仅在临时话题中生效',
       title: '自动创建话题',
     },
-    enableCompressThreshold: {
-      title: '是否开启历史消息长度压缩阈值',
+    enableCompressHistory: {
+      title: '开启历史消息自动总结',
     },
     enableHistoryCount: {
       alias: '不限制',
@@ -375,6 +374,27 @@ export default {
       modelDesc: '指定用于生成助理名称、描述、头像、标签的模型',
       title: '自动生成助理信息',
     },
+    customPrompt: {
+      addPrompt: '添加自定义提示',
+      desc: '填写后，系统助理将在生成内容时使用自定义提示',
+      placeholder: '请输入自定义提示词',
+      title: '自定义提示词',
+    },
+    historyCompress: {
+      label: '会话历史模型',
+      modelDesc: '指定用于压缩会话历史的模型',
+      title: '自动总结会话历史',
+    },
+    queryRewrite: {
+      label: '提问重写模型',
+      modelDesc: '指定用于优化用户提问的模型',
+      title: '知识库提问重写',
+    },
+    thread: {
+      label: '子话题命名模型',
+      modelDesc: '指定用于子话题自动重命名的模型',
+      title: '子话题自动命名',
+    },
     title: '系统助手',
     topic: {
       label: '话题命名模型',
@@ -393,6 +413,7 @@ export default {
     'common': '通用设置',
     'experiment': '实验',
     'llm': '语言模型',
+    'provider': 'AI 服务商',
     'sync': '云端同步',
     'system-agent': '系统助手',
     'tts': '语音服务',

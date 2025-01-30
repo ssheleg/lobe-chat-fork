@@ -7,12 +7,14 @@ import { useTranslation } from 'react-i18next';
 import { Flexbox } from 'react-layout-kit';
 
 import type { MenuProps } from '@/components/Menu';
+import { isDeprecatedEdition } from '@/const/version';
 import { SettingsTabs } from '@/store/global/initialState';
 import { featureFlagsSelectors, useServerConfigStore } from '@/store/serverConfig';
 
 export const useCategory = () => {
   const { t } = useTranslation('setting');
-  const { enableWebrtc, showLLM, enableSTT } = useServerConfigStore(featureFlagsSelectors);
+  const { enableWebrtc, showLLM, enableSTT, hideDocs } =
+    useServerConfigStore(featureFlagsSelectors);
 
   const cateItems: MenuProps['items'] = useMemo(
     () =>
@@ -49,15 +51,27 @@ export const useCategory = () => {
             </Link>
           ),
         },
-        showLLM && {
-          icon: <Icon icon={Brain} />,
-          key: SettingsTabs.LLM,
-          label: (
-            <Link href={'/settings/llm'} onClick={(e) => e.preventDefault()}>
-              {t('tab.llm')}
-            </Link>
-          ),
-        },
+        showLLM &&
+        // TODO: Remove /llm when v2.0
+        (isDeprecatedEdition
+          ? {
+              icon: <Icon icon={Brain} />,
+              key: SettingsTabs.LLM,
+              label: (
+                <Link href={'/settings/llm'} onClick={(e) => e.preventDefault()}>
+                  {t('tab.llm')}
+                </Link>
+              ),
+            }
+          : {
+              icon: <Icon icon={Brain} />,
+              key: SettingsTabs.Provider,
+              label: (
+                <Link href={'/settings/provider'} onClick={(e) => e.preventDefault()}>
+                  {t('tab.provider')}
+                </Link>
+              ),
+            }),
 
         enableSTT && {
           icon: <Icon icon={Mic2} />,
@@ -77,7 +91,7 @@ export const useCategory = () => {
             </Link>
           ),
         },
-        {
+        !hideDocs && {
           icon: <Icon icon={Info} />,
           key: SettingsTabs.About,
           label: (

@@ -28,13 +28,20 @@ export interface JWTPayload {
   /**
    * Represents the endpoint of provider
    */
-  endpoint?: string;
+  baseURL?: string;
 
   azureApiVersion?: string;
 
   awsAccessKeyId?: string;
   awsRegion?: string;
   awsSecretAccessKey?: string;
+  awsSessionToken?: string;
+
+  cloudflareBaseURLOrAccountID?: string;
+
+  wenxinAccessKey?: string;
+  wenxinSecretKey?: string;
+
   /**
    * user id
    * in client db mode it's a uuid

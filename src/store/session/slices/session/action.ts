@@ -5,6 +5,7 @@ import { DeepPartial } from 'utility-types';
 import { StateCreator } from 'zustand/vanilla';
 
 import { message } from '@/components/AntdStaticMethods';
+import { MESSAGE_CANCEL_FLAT } from '@/const/message';
 import { DEFAULT_AGENT_LOBE_SESSION, INBOX_SESSION_ID } from '@/const/session';
 import { useClientDataSWR } from '@/libs/swr';
 import { sessionService } from '@/services/session';
@@ -72,7 +73,10 @@ export interface SessionAction {
 
   updateSearchKeywords: (keywords: string) => void;
 
-  useFetchSessions: (isLogin: boolean | undefined) => SWRResponse<ChatSessionList>;
+  useFetchSessions: (
+    enabled: boolean,
+    isLogin: boolean | undefined,
+  ) => SWRResponse<ChatSessionList>;
   useSearchSessions: (keyword?: string) => SWRResponse<any>;
 
   internal_dispatchSessions: (payload: SessionDispatch) => void;
@@ -188,7 +192,7 @@ export const createSessionSlice: StateCreator<
     const { activeId, refreshSessions } = get();
 
     const abortController = get().signalSessionMeta as AbortController;
-    if (abortController) abortController.abort('canceled');
+    if (abortController) abortController.abort(MESSAGE_CANCEL_FLAT);
     const controller = new AbortController();
     set({ signalSessionMeta: controller }, false, 'updateSessionMetaSignal');
 
@@ -196,9 +200,9 @@ export const createSessionSlice: StateCreator<
     await refreshSessions();
   },
 
-  useFetchSessions: (isLogin) =>
+  useFetchSessions: (enabled, isLogin) =>
     useClientDataSWR<ChatSessionList>(
-      [FETCH_SESSIONS_KEY, isLogin],
+      enabled ? [FETCH_SESSIONS_KEY, isLogin] : null,
       () => sessionService.getGroupedSessions(),
       {
         fallbackData: {

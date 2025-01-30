@@ -9,13 +9,79 @@
       "title": "{{name}} 开始公测"
     }
   },
-  "appInitializing": "应用启动中，请耐心等待...",
+  "appLoading": {
+    "appIdle": "准备启动",
+    "appInitializing": "应用启动中...",
+    "failed": "很抱歉，应用初始化失败，请查看详情进行排查",
+    "finished": "数据库初始化完成",
+    "goToChat": "对话页面加载中...",
+    "initAuth": "鉴权服务初始化...",
+    "initUser": "用户状态初始化...",
+    "initializing": "PGlite 数据库初始化...",
+    "loadingDependencies": "初始化依赖...",
+    "loadingWasm": "加载 WASM 模块...",
+    "migrating": "执行数据表迁移...",
+    "ready": "数据库已就绪",
+    "showDetail": "查看详情"
+  },
   "autoGenerate": "自动补全",
   "autoGenerateTooltip": "基于提示词自动补全助手描述",
   "autoGenerateTooltipDisabled": "请填写提示词后使用自动补全功能",
+  "back": "返回",
+  "batchDelete": "批量删除",
   "blog": "产品博客",
+  "branching": "创建子话题",
+  "branchingDisable": "「子话题」功能在当前模式下不可用，如需该功能，请切换到 Postgres/Pglite DB 模式或使用 LobeChat Cloud",
   "cancel": "取消",
   "changelog": "更新日志",
+  "clientDB": {
+    "autoInit": {
+      "title": "初始化 PGlite 数据库"
+    },
+    "error": {
+      "desc": "非常抱歉，Pglite 数据库初始化过程发生异常。请点击按钮重试。如多次重试后仍重复出错，请 <1>提交问题</1> ，我们将会第一时间帮你排查",
+      "detail": "错误原因：[{{type}}] {{message}}，明细如下：",
+      "retry": "重试",
+      "title": "数据库初始化失败"
+    },
+    "initing": {
+      "error": "数据库初始化出错，点击查看详情",
+      "idle": "等待初始化...",
+      "initializing": "正在初始化...",
+      "loadingDependencies": "加载依赖中...",
+      "loadingWasmModule": "加载 WASM 模块中...",
+      "migrating": "执行数据表迁移...",
+      "ready": "数据库已就绪"
+    },
+    "modal": {
+      "desc": "立即启用下一代客户端数据库。在你的浏览器中持久存储聊天数据，并使用知识库等进阶特性。",
+      "enable": "立即启用",
+      "features": {
+        "knowledgeBase": {
+          "desc": "沉淀你的个人知识库，并与你的助手轻松开启知识库对话（即将上线）",
+          "title": "支持知识库对话，开启第二大脑"
+        },
+        "localFirst": {
+          "desc": "聊天数据完全存储在浏览器中，你的数据始终在你的掌握。",
+          "title": "本地优先，隐私至上"
+        },
+        "pglite": {
+          "desc": "基于 PGlite 构建，原生支持 AI Native 高阶特性（向量检索）",
+          "title": "新一代客户端存储架构"
+        }
+      },
+      "init": {
+        "desc": "正在初始化数据库，视网络差异可能会用时 5~30 秒不等",
+        "title": "正在初始化 PGlite 数据库"
+      },
+      "title": "开启客户端数据库"
+    },
+    "ready": {
+      "button": "立即使用",
+      "desc": "立即想用",
+      "title": "PGlite 数据库已就绪"
+    }
+  },
   "close": "关闭",
   "contact": "联系我们",
   "copy": "复制",
@@ -31,6 +97,7 @@
   "defaultSession": "自定义助手",
   "delete": "删除",
   "document": "使用文档",
+  "download": "下载",
   "duplicate": "创建副本",
   "edit": "编辑",
   "export": "导出配置",
@@ -52,7 +119,7 @@
     "and": "并",
     "feedback": {
       "action": "分享反馈",
-      "desc": "您的每一个想法和建议对我们来说都弥足珍贵，我们迫不及待地想知道您的看法！欢迎联系我们提供产品功能和使用体验反馈，帮助我们将 LobeChat 建设得更好。",
+      "desc": "您的每一个想法和建议对我们来说都弥足珍贵，我们迫不及待地想知道您的看法！欢迎联系我们提供产品功能和使用体验反馈，帮助我们将 {{appName}} 建设得更好。",
       "title": "在 GitHub 分享您宝贵的反馈"
     },
     "later": "稍后",
@@ -109,6 +176,7 @@
     "en": "英语",
     "en-US": "英语",
     "es-ES": "西班牙语",
+    "fa-IR": "波斯语",
     "fi-FI": "芬兰语",
     "fr-FR": "法语",
     "hi-IN": "印地语",
@@ -150,6 +218,7 @@
   "pinOff": "取消置顶",
   "privacy": "隐私政策",
   "regenerate": "重新生成",
+  "releaseNotes": "版本详情",
   "rename": "重命名",
   "reset": "重置",
   "retry": "重试",
@@ -192,19 +261,21 @@
   },
   "tab": {
     "chat": "会话",
-    "market": "发现",
+    "discover": "发现",
+    "files": "文件",
     "me": "我",
     "setting": "设置"
   },
   "telemetry": {
     "allow": "允许",
     "deny": "拒绝",
-    "desc": "我们希望匿名获取你的使用信息，进而帮助我们改进 LobeChat，并为你提供更好的产品体验。你可以在「设置」 - 「关于」随时关闭。",
+    "desc": "我们希望匿名获取你的使用信息，进而帮助我们改进 {{appName}}，并为你提供更好的产品体验。你可以在「设置」 - 「关于」随时关闭。",
     "learnMore": "了解更多",
-    "title": "帮助 LobeChat 做得更好"
+    "title": "帮助 {{appName}} 做得更好"
   },
   "temp": "临时",
   "terms": "服务条款",
+  "update": "更新",
   "updateAgent": "更新助理信息",
   "upgradeVersion": {
     "action": "升级",

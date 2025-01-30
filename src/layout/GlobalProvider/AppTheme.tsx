@@ -1,6 +1,12 @@
 'use client';
 
-import { ConfigProvider, NeutralColors, PrimaryColors, ThemeProvider } from '@lobehub/ui';
+import {
+  ConfigProvider,
+  FontLoader,
+  NeutralColors,
+  PrimaryColors,
+  ThemeProvider,
+} from '@lobehub/ui';
 import { ThemeAppearance, createStyles } from 'antd-style';
 import 'antd/dist/reset.css';
 import Image from 'next/image';
@@ -63,9 +69,9 @@ const useStyles = createStyles(({ css, token }) => ({
     }
 
     :hover::-webkit-scrollbar-thumb {
+      border: 3px solid transparent;
       background-color: ${token.colorText};
       background-clip: content-box;
-      border: 3px solid transparent;
     }
 
     ::-webkit-scrollbar-track {
@@ -76,18 +82,29 @@ const useStyles = createStyles(({ css, token }) => ({
 
 export interface AppThemeProps {
   children?: ReactNode;
+  customFontFamily?: string;
+  customFontURL?: string;
   defaultAppearance?: ThemeAppearance;
   defaultNeutralColor?: NeutralColors;
   defaultPrimaryColor?: PrimaryColors;
+  globalCDN?: boolean;
 }
 
 const AppTheme = memo<AppThemeProps>(
-  ({ children, defaultAppearance, defaultPrimaryColor, defaultNeutralColor }) => {
+  ({
+    children,
+    defaultAppearance,
+    defaultPrimaryColor,
+    defaultNeutralColor,
+    globalCDN,
+    customFontURL,
+    customFontFamily,
+  }) => {
     // console.debug('server:appearance', defaultAppearance);
     // console.debug('server:primaryColor', defaultPrimaryColor);
     // console.debug('server:neutralColor', defaultNeutralColor);
     const themeMode = useUserStore(userGeneralSettingsSelectors.currentThemeMode);
-    const { styles, cx } = useStyles();
+    const { styles, cx, theme } = useStyles();
     const [primaryColor, neutralColor] = useUserStore((s) => [
       userGeneralSettingsSelectors.primaryColor(s),
       userGeneralSettingsSelectors.neutralColor(s),
@@ -112,11 +129,25 @@ const AppTheme = memo<AppThemeProps>(
         onAppearanceChange={(appearance) => {
           setCookie(LOBE_THEME_APPEARANCE, appearance);
         }}
+        theme={{
+          cssVar: true,
+          token: {
+            fontFamily: customFontFamily ? `${customFontFamily},${theme.fontFamily}` : undefined,
+          },
+        }}
         themeMode={themeMode}
       >
+        {!!customFontURL && <FontLoader url={customFontURL} />}
         <GlobalStyle />
         <AntdStaticMethods />
-        <ConfigProvider config={{ aAs: Link, imgAs: Image, imgUnoptimized: true }}>
+        <ConfigProvider
+          config={{
+            aAs: Link,
+            imgAs: Image,
+            imgUnoptimized: true,
+            proxy: globalCDN ? 'unpkg' : undefined,
+          }}
+        >
           {children}
         </ConfigProvider>
       </ThemeProvider>

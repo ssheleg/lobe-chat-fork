@@ -1,14 +1,17 @@
 import {
   Content,
+  FunctionCallPart,
   FunctionDeclaration,
-  FunctionDeclarationSchemaProperty,
-  FunctionDeclarationSchemaType,
   Tool as GoogleFunctionCallTool,
   GoogleGenerativeAI,
   Part,
+  SchemaType,
 } from '@google/generative-ai';
-import { JSONSchema7 } from 'json-schema';
-import { transform } from 'lodash-es';
+
+import { LOBE_DEFAULT_MODEL_LIST } from '@/config/aiModels';
+import type { ChatModelCard } from '@/types/llm';
+import { imageUrlToBase64 } from '@/utils/imageToBase64';
+import { safeParseJSON } from '@/utils/safeParseJSON';
 
 import { LobeRuntimeAI } from '../BaseAI';
 import { AgentRuntimeErrorType, ILobeAgentRuntimeErrorType } from '../error';
@@ -23,8 +26,15 @@ import { ModelProvider } from '../types/type';
 import { AgentRuntimeError } from '../utils/createError';
 import { debugStream } from '../utils/debugStream';
 import { StreamingResponse } from '../utils/response';
-import { GoogleGenerativeAIStream, googleGenAIResultToStream } from '../utils/streams';
+import { GoogleGenerativeAIStream, convertIterableToStream } from '../utils/streams';
 import { parseDataUri } from '../utils/uriParser';
+
+export interface GoogleModelCard {
+  displayName: string;
+  inputTokenLimit: number;
+  name: string;
+  outputTokenLimit: number;
+}
 
 enum HarmCategory {
   HARM_CATEGORY_DANGEROUS_CONTENT = 'HARM_CATEGORY_DANGEROUS_CONTENT',
@@ -37,22 +47,35 @@ enum HarmBlockThreshold {
   BLOCK_NONE = 'BLOCK_NONE',
 }
 
+function getThreshold(model: string): HarmBlockThreshold {
+  const useOFF = ['gemini-2.0-flash-exp'];
+  if (useOFF.includes(model)) {
+    return 'OFF' as HarmBlockThreshold; // https://discuss.ai.google.dev/t/59352
+  }
+  return HarmBlockThreshold.BLOCK_NONE;
+}
+
+const DEFAULT_BASE_URL = 'https://generativelanguage.googleapis.com';
+
 export class LobeGoogleAI implements LobeRuntimeAI {
   private client: GoogleGenerativeAI;
   baseURL?: string;
+  apiKey?: string;
 
   constructor({ apiKey, baseURL }: { apiKey?: string; baseURL?: string } = {}) {
     if (!apiKey) throw AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidProviderAPIKey);
 
     this.client = new GoogleGenerativeAI(apiKey);
-    this.baseURL = baseURL;
+    this.baseURL = baseURL || DEFAULT_BASE_URL;
+    this.apiKey = apiKey;
   }
 
-  async chat(payload: ChatStreamPayload, options?: ChatCompetitionOptions) {
+  async chat(rawPayload: ChatStreamPayload, options?: ChatCompetitionOptions) {
     try {
+      const payload = this.buildPayload(rawPayload);
       const model = payload.model;
 
-      const contents = this.buildGoogleMessages(payload.messages, model);
+      const contents = await this.buildGoogleMessages(payload.messages, model);
 
       const geminiStreamResult = await this.client
         .getGenerativeModel(
@@ -68,27 +91,31 @@ export class LobeGoogleAI implements LobeRuntimeAI {
             safetySettings: [
               {
                 category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                threshold: HarmBlockThreshold.BLOCK_NONE,
+                threshold: getThreshold(model),
               },
               {
                 category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                threshold: HarmBlockThreshold.BLOCK_NONE,
+                threshold: getThreshold(model),
               },
               {
                 category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-                threshold: HarmBlockThreshold.BLOCK_NONE,
+                threshold: getThreshold(model),
               },
               {
                 category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                threshold: HarmBlockThreshold.BLOCK_NONE,
+                threshold: getThreshold(model),
               },
             ],
           },
           { apiVersion: 'v1beta', baseUrl: this.baseURL },
         )
-        .generateContentStream({ contents, tools: this.buildGoogleTools(payload.tools) });
+        .generateContentStream({
+          contents,
+          systemInstruction: payload.system as string,
+          tools: this.buildGoogleTools(payload.tools),
+        });
 
-      const googleStream = googleGenAIResultToStream(geminiStreamResult);
+      const googleStream = convertIterableToStream(geminiStreamResult.stream);
       const [prod, useForDebug] = googleStream.tee();
 
       if (process.env.DEBUG_GOOGLE_CHAT_COMPLETION === '1') {
@@ -109,7 +136,45 @@ export class LobeGoogleAI implements LobeRuntimeAI {
     }
   }
 
-  private convertContentToGooglePart = (content: UserMessageContentPart): Part => {
+  async models() {
+    const url = `${this.baseURL}/v1beta/models?key=${this.apiKey}`;
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+    const json = await response.json();
+
+    const modelList: GoogleModelCard[] = json['models'];
+
+    return modelList
+      .map((model) => {
+        const modelName = model.name.replace(/^models\//, '');
+
+        return {
+          contextWindowTokens: model.inputTokenLimit + model.outputTokenLimit,
+          displayName: model.displayName,
+          enabled: LOBE_DEFAULT_MODEL_LIST.find((m) => modelName.endsWith(m.id))?.enabled || false,
+          functionCall: modelName.toLowerCase().includes('gemini'),
+          id: modelName,
+          vision:
+            modelName.toLowerCase().includes('vision') ||
+            (modelName.toLowerCase().includes('gemini') &&
+              !modelName.toLowerCase().includes('gemini-1.0')),
+        };
+      })
+      .filter(Boolean) as ChatModelCard[];
+  }
+
+  private buildPayload(payload: ChatStreamPayload) {
+    const system_message = payload.messages.find((m) => m.role === 'system');
+    const user_messages = payload.messages.filter((m) => m.role !== 'system');
+
+    return {
+      ...payload,
+      messages: user_messages,
+      system: system_message?.content,
+    };
+  }
+  private convertContentToGooglePart = async (content: UserMessageContentPart): Promise<Part> => {
     switch (content.type) {
       case 'text': {
         return { text: content.text };
@@ -130,71 +195,90 @@ export class LobeGoogleAI implements LobeRuntimeAI {
           };
         }
 
-        // if (type === 'url') {
-        //   return {
-        //     fileData: {
-        //       fileUri: content.image_url.url,
-        //       mimeType: mimeType || 'image/png',
-        //     },
-        //   };
-        // }
+        if (type === 'url') {
+          const { base64, mimeType } = await imageUrlToBase64(content.image_url.url);
+
+          return {
+            inlineData: {
+              data: base64,
+              mimeType,
+            },
+          };
+        }
 
         throw new TypeError(`currently we don't support image url: ${content.image_url.url}`);
       }
     }
   };
 
-  private convertOAIMessagesToGoogleMessage = (message: OpenAIChatMessage): Content => {
+  private convertOAIMessagesToGoogleMessage = async (
+    message: OpenAIChatMessage,
+  ): Promise<Content> => {
     const content = message.content as string | UserMessageContentPart[];
+    if (!!message.tool_calls) {
+      return {
+        parts: message.tool_calls.map<FunctionCallPart>((tool) => ({
+          functionCall: {
+            args: safeParseJSON(tool.function.arguments)!,
+            name: tool.function.name,
+          },
+        })),
+        role: 'function',
+      };
+    }
 
     return {
       parts:
         typeof content === 'string'
           ? [{ text: content }]
-          : content.map((c) => this.convertContentToGooglePart(c)),
+          : await Promise.all(content.map(async (c) => await this.convertContentToGooglePart(c))),
       role: message.role === 'assistant' ? 'model' : 'user',
     };
   };
 
-  // convert messages from the Vercel AI SDK Format to the format
-  // that is expected by the Google GenAI SDK
-  private buildGoogleMessages = (messages: OpenAIChatMessage[], model: string): Content[] => {
-    // if the model is gemini-1.5-pro-latest, we don't need any special handling
-    if (model === 'gemini-1.5-pro-latest') {
-      return messages
-        .filter((message) => message.role !== 'function')
-        .map((msg) => this.convertOAIMessagesToGoogleMessage(msg));
+  // convert messages from the OpenAI format to Google GenAI SDK
+  private buildGoogleMessages = async (
+    messages: OpenAIChatMessage[],
+    model: string,
+  ): Promise<Content[]> => {
+    // if the model is gemini-1.0 we need to pair messages
+    if (model.startsWith('gemini-1.0')) {
+      const contents: Content[] = [];
+      let lastRole = 'model';
+
+      for (const message of messages) {
+        // current to filter function message
+        if (message.role === 'function') {
+          continue;
+        }
+        const googleMessage = await this.convertOAIMessagesToGoogleMessage(message);
+
+        // if the last message is a model message and the current message is a model message
+        // then we need to add a user message to separate them
+        if (lastRole === googleMessage.role) {
+          contents.push({ parts: [{ text: '' }], role: lastRole === 'user' ? 'model' : 'user' });
+        }
+
+        // add the current message to the contents
+        contents.push(googleMessage);
+
+        // update the last role
+        lastRole = googleMessage.role;
+      }
+
+      // if the last message is a user message, then we need to add a model message to separate them
+      if (lastRole === 'model') {
+        contents.push({ parts: [{ text: '' }], role: 'user' });
+      }
+
+      return contents;
     }
 
-    const contents: Content[] = [];
-    let lastRole = 'model';
+    const pools = messages
+      .filter((message) => message.role !== 'function')
+      .map(async (msg) => await this.convertOAIMessagesToGoogleMessage(msg));
 
-    messages.forEach((message) => {
-      // current to filter function message
-      if (message.role === 'function') {
-        return;
-      }
-      const googleMessage = this.convertOAIMessagesToGoogleMessage(message);
-
-      // if the last message is a model message and the current message is a model message
-      // then we need to add a user message to separate them
-      if (lastRole === googleMessage.role) {
-        contents.push({ parts: [{ text: '' }], role: lastRole === 'user' ? 'model' : 'user' });
-      }
-
-      // add the current message to the contents
-      contents.push(googleMessage);
-
-      // update the last role
-      lastRole = googleMessage.role;
-    });
-
-    // if the last message is a user message, then we need to add a model message to separate them
-    if (lastRole === 'model') {
-      contents.push({ parts: [{ text: '' }], role: 'user' });
-    }
-
-    return contents;
+    return Promise.all(pools);
   };
 
   private parseErrorMessage(message: string): {
@@ -253,58 +337,23 @@ export class LobeGoogleAI implements LobeRuntimeAI {
   private convertToolToGoogleTool = (tool: ChatCompletionTool): FunctionDeclaration => {
     const functionDeclaration = tool.function;
     const parameters = functionDeclaration.parameters;
+    // refs: https://github.com/lobehub/lobe-chat/pull/5002
+    const properties =
+      parameters?.properties && Object.keys(parameters.properties).length > 0
+        ? parameters.properties
+        : { dummy: { type: 'string' } }; // dummy property to avoid empty object
 
     return {
       description: functionDeclaration.description,
       name: functionDeclaration.name,
       parameters: {
         description: parameters?.description,
-        properties: transform(parameters?.properties, (result, value, key: string) => {
-          result[key] = this.convertSchemaObject(value as JSONSchema7);
-        }),
+        properties: properties,
         required: parameters?.required,
-        type: FunctionDeclarationSchemaType.OBJECT,
+        type: SchemaType.OBJECT,
       },
     };
   };
-
-  private convertSchemaObject(schema: JSONSchema7): FunctionDeclarationSchemaProperty {
-    switch (schema.type) {
-      default:
-      case 'object': {
-        return {
-          ...schema,
-          properties: Object.fromEntries(
-            Object.entries(schema.properties || {}).map(([key, value]) => [
-              key,
-              this.convertSchemaObject(value as JSONSchema7),
-            ]),
-          ),
-          type: FunctionDeclarationSchemaType.OBJECT,
-        } as any;
-      }
-
-      case 'array': {
-        return {
-          ...schema,
-          items: this.convertSchemaObject(schema.items as JSONSchema7),
-          type: FunctionDeclarationSchemaType.ARRAY,
-        } as any;
-      }
-
-      case 'string': {
-        return { ...schema, type: FunctionDeclarationSchemaType.STRING } as any;
-      }
-
-      case 'number': {
-        return { ...schema, type: FunctionDeclarationSchemaType.NUMBER } as any;
-      }
-
-      case 'boolean': {
-        return { ...schema, type: FunctionDeclarationSchemaType.BOOLEAN } as any;
-      }
-    }
-  }
 }
 
 export default LobeGoogleAI;

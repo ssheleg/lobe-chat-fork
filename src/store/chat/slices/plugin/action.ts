@@ -8,18 +8,25 @@ import { StateCreator } from 'zustand/vanilla';
 import { LOADING_FLAT } from '@/const/message';
 import { PLUGIN_SCHEMA_API_MD5_PREFIX, PLUGIN_SCHEMA_SEPARATOR } from '@/const/plugin';
 import { chatService } from '@/services/chat';
-import { CreateMessageParams, messageService } from '@/services/message';
+import { messageService } from '@/services/message';
 import { ChatStore } from '@/store/chat/store';
 import { useToolStore } from '@/store/tool';
 import { pluginSelectors } from '@/store/tool/selectors';
 import { builtinTools } from '@/tools';
 import { ChatErrorType } from '@/types/fetch';
-import { ChatMessage, ChatMessageError, ChatToolPayload, MessageToolCall } from '@/types/message';
+import {
+  ChatMessage,
+  ChatMessageError,
+  ChatToolPayload,
+  CreateMessageParams,
+  MessageToolCall,
+} from '@/types/message';
 import { merge } from '@/utils/merge';
 import { safeParseJSON } from '@/utils/safeParseJSON';
 import { setNamespace } from '@/utils/storeDebug';
 
-import { chatSelectors } from '../../slices/message/selectors';
+import { chatSelectors } from '../message/selectors';
+import { threadSelectors } from '../thread/selectors';
 
 const n = setNamespace('plugin');
 
@@ -38,10 +45,18 @@ export interface ChatPluginAction {
   invokeStandaloneTypePlugin: (id: string, payload: ChatToolPayload) => Promise<void>;
 
   reInvokeToolMessage: (id: string) => Promise<void>;
-  triggerAIMessage: (params: { parentId?: string; traceId?: string }) => Promise<void>;
+  triggerAIMessage: (params: {
+    parentId?: string;
+    traceId?: string;
+    threadId?: string;
+    inPortalThread?: boolean;
+  }) => Promise<void>;
   summaryPluginContent: (id: string) => Promise<void>;
 
-  triggerToolCalls: (id: string) => Promise<void>;
+  triggerToolCalls: (
+    id: string,
+    params?: { threadId?: string; inPortalThread?: boolean },
+  ) => Promise<void>;
   updatePluginState: (id: string, value: any) => Promise<void>;
   updatePluginArguments: <T = any>(id: string, value: T) => Promise<void>;
 
@@ -135,7 +150,9 @@ export const chatPlugin: StateCreator<
 
     try {
       content = JSON.parse(data);
-    } catch {}
+    } catch {
+      /* empty block */
+    }
 
     if (!content) return;
 
@@ -192,10 +209,18 @@ export const chatPlugin: StateCreator<
     await get().internal_invokeDifferentTypePlugin(id, payload);
   },
 
-  triggerAIMessage: async ({ parentId, traceId }) => {
+  triggerAIMessage: async ({ parentId, traceId, threadId, inPortalThread }) => {
     const { internal_coreProcessMessage } = get();
-    const chats = chatSelectors.currentChats(get());
-    await internal_coreProcessMessage(chats, parentId ?? chats.at(-1)!.id, { traceId });
+
+    const chats = inPortalThread
+      ? threadSelectors.portalAIChatsWithHistoryConfig(get())
+      : chatSelectors.mainAIChatsWithHistoryConfig(get());
+
+    await internal_coreProcessMessage(chats, parentId ?? chats.at(-1)!.id, {
+      traceId,
+      threadId,
+      inPortalThread,
+    });
   },
 
   summaryPluginContent: async (id) => {
@@ -220,7 +245,7 @@ export const chatPlugin: StateCreator<
     );
   },
 
-  triggerToolCalls: async (assistantId) => {
+  triggerToolCalls: async (assistantId, { threadId, inPortalThread } = {}) => {
     const message = chatSelectors.getMessageById(assistantId)(get());
     if (!message || !message.tools) return;
 
@@ -234,6 +259,7 @@ export const chatPlugin: StateCreator<
         role: 'tool',
         sessionId: get().activeId,
         tool_call_id: payload.id,
+        threadId,
         topicId: get().activeTopicId, // if there is activeTopicId，then add it to topicId
       };
 
@@ -255,7 +281,7 @@ export const chatPlugin: StateCreator<
 
     const traceId = chatSelectors.getTraceIdByMessageId(latestToolId)(get());
 
-    await get().triggerAIMessage({ traceId });
+    await get().triggerAIMessage({ traceId, threadId, inPortalThread });
   },
   updatePluginState: async (id, value) => {
     const { refreshMessages } = get();
@@ -439,9 +465,7 @@ export const chatPlugin: StateCreator<
         // if the apiName is md5, try to find the correct apiName in the plugins
         if (apiName.startsWith(PLUGIN_SCHEMA_API_MD5_PREFIX)) {
           const md5 = apiName.replace(PLUGIN_SCHEMA_API_MD5_PREFIX, '');
-          const manifest = pluginSelectors.getPluginManifestById(identifier)(
-            useToolStore.getState(),
-          );
+          const manifest = pluginSelectors.getToolManifestById(identifier)(useToolStore.getState());
 
           const api = manifest?.api.find((api) => Md5.hashStr(api.name).toString() === md5);
           if (api) {

@@ -10,6 +10,7 @@ export const LobeMetaDataSchema = z.object({
    */
   backgroundColor: z.string().optional(),
   description: z.string().optional(),
+
   tags: z.array(z.string()).optional(),
   /**
    * 名称
@@ -20,19 +21,10 @@ export const LobeMetaDataSchema = z.object({
 export type MetaData = z.infer<typeof LobeMetaDataSchema>;
 
 export interface BaseDataModel {
-  /**
-   * @deprecated
-   */
-  createAt?: number;
-
   createdAt: number;
 
   id: string;
   meta: MetaData;
 
-  /**
-   * @deprecated
-   */
-  updateAt?: number;
   updatedAt: number;
 }

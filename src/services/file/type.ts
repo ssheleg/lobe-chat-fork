@@ -1,9 +1,13 @@
-/* eslint-disable typescript-sort-keys/interface */
-import { FilePreview, UploadFileParams } from '@/types/files';
+import { CheckFileHashResult, FileItem, UploadFileParams } from '@/types/files';
 
 export interface IFileService {
-  createFile(file: UploadFileParams): Promise<{ id: string }>;
-  removeFile(id: string): Promise<any>;
+  checkFileHash(hash: string): Promise<CheckFileHashResult>;
+  createFile(
+    file: UploadFileParams,
+    knowledgeBaseId?: string,
+  ): Promise<{ id: string; url: string }>;
+  getFile(id: string): Promise<FileItem>;
   removeAllFiles(): Promise<any>;
-  getFile(id: string): Promise<FilePreview>;
+  removeFile(id: string): Promise<void>;
+  removeFiles(ids: string[]): Promise<void>;
 }

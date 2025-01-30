@@ -29,7 +29,10 @@ describe('LobeOllamaAI', () => {
       try {
         new LobeOllamaAI({ baseURL: 'invalid-url' });
       } catch (e) {
-        expect(e).toEqual(AgentRuntimeError.createError(AgentRuntimeErrorType.InvalidOllamaArgs));
+        expect(e).toEqual({
+          error: new TypeError('Invalid URL'),
+          errorType: 'InvalidOllamaArgs',
+        });
       }
     });
   });
@@ -102,6 +105,33 @@ describe('LobeOllamaAI', () => {
       options.signal.dispatchEvent(new Event('abort'));
 
       expect(abortMock).toHaveBeenCalled();
+    });
+
+    it('temperature should be divided by two', async () => {
+      const chatMock = vi.fn().mockResolvedValue({});
+      vi.mocked(Ollama.prototype.chat).mockImplementation(chatMock);
+
+      const payload = {
+        messages: [{ content: 'Hello', role: 'user' }],
+        model: 'model-id',
+        temperature: 0.7,
+      };
+      const options = { signal: new AbortController().signal };
+
+      const response = await ollamaAI.chat(payload as any, options);
+
+      expect(chatMock).toHaveBeenCalledWith({
+        messages: [{ content: 'Hello', role: 'user' }],
+        model: 'model-id',
+        options: {
+          frequency_penalty: undefined,
+          presence_penalty: undefined,
+          temperature: 0.35,
+          top_p: undefined,
+        },
+        stream: true,
+      });
+      expect(response).toBeInstanceOf(Response);
     });
   });
 

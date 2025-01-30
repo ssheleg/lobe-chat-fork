@@ -1,38 +1,45 @@
+import { useCallback } from 'react';
+
 import { useOpenChatSettings } from '@/hooks/useInterceptingRoutes';
 import { useGlobalStore } from '@/store/global';
 import { useSessionStore } from '@/store/session';
 import { sessionSelectors } from '@/store/session/selectors';
 
-import { OnAvatarsClick, RenderMessage } from '../types';
+import { MarkdownCustomRender, RenderBelowMessage, RenderMessage } from '../types';
 import { AssistantMessage } from './Assistant';
-import { DefaultMessage } from './Default';
-import { ToolMessage } from './Tool';
-import { UserMessage } from './User';
+import { DefaultBelowMessage, DefaultMessage } from './Default';
+import { UserBelowMessage, UserMarkdownRender, UserMessage } from './User';
 
 export const renderMessages: Record<string, RenderMessage> = {
   assistant: AssistantMessage,
   default: DefaultMessage,
   function: DefaultMessage,
-  tool: ToolMessage,
   user: UserMessage,
 };
 
-export const useAvatarsClick = (): OnAvatarsClick => {
+export const renderBelowMessages: Record<string, RenderBelowMessage> = {
+  default: DefaultBelowMessage,
+  user: UserBelowMessage,
+};
+
+export const markdownCustomRenders: Record<string, MarkdownCustomRender> = {
+  user: UserMarkdownRender,
+};
+
+export const useAvatarsClick = (role?: string) => {
   const [isInbox] = useSessionStore((s) => [sessionSelectors.isInboxSession(s)]);
   const [toggleSystemRole] = useGlobalStore((s) => [s.toggleSystemRole]);
   const openChatSettings = useOpenChatSettings();
 
-  return (role) => {
+  return useCallback(() => {
     switch (role) {
       case 'assistant': {
-        return () => {
-          if (!isInbox) {
-            toggleSystemRole(true);
-          } else {
-            openChatSettings();
-          }
-        };
+        if (!isInbox) {
+          toggleSystemRole(true);
+        } else {
+          openChatSettings();
+        }
       }
     }
-  };
+  }, [isInbox, role]);
 };

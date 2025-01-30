@@ -12,7 +12,7 @@
   },
   "analytics": {
     "telemetry": {
-      "desc": "Al seleccionar el envío de datos de telemetría, nos ayudas a mejorar la experiencia general del usuario de LobeChat",
+      "desc": "Al seleccionar enviar datos de telemetría, puedes ayudarnos a mejorar la experiencia general del usuario en {{appName}}",
       "title": "Enviar datos de uso anónimos"
     },
     "title": "Análisis de datos"
@@ -70,11 +70,11 @@
           "title": "Nombre de visualización del modelo"
         },
         "files": {
-          "extra": "La carga de archivos actual en LobeChat es solo una solución provisional. Por favor, espera a futuras actualizaciones para una funcionalidad completa de carga de archivos.",
+          "extra": "La implementación actual de carga de archivos es solo una solución temporal, limitada a pruebas personales. Por favor, espera la implementación completa de la capacidad de carga de archivos.",
           "title": "Soporte de carga de archivos"
         },
         "functionCall": {
-          "extra": "Esta configuración solo habilitará la capacidad de llamada a funciones en LobeChat. La compatibilidad con las llamadas a funciones depende completamente del modelo en sí. Por favor, realiza pruebas para verificar la disponibilidad de esta capacidad en el modelo.",
+          "extra": "Esta configuración solo habilitará la capacidad de llamada a funciones en la aplicación; si se admite la llamada a funciones depende completamente del modelo en sí. Por favor, prueba la disponibilidad de la capacidad de llamada a funciones de este modelo.",
           "title": "Soporte de llamadas a funciones"
         },
         "id": {
@@ -84,11 +84,10 @@
         },
         "modalTitle": "Configuración del modelo personalizado",
         "tokens": {
-          "title": "Número máximo de tokens",
-          "unlimited": "ilimitado"
+          "title": "Número máximo de tokens"
         },
         "vision": {
-          "extra": "Esta configuración solo habilitará la configuración de carga de imágenes en LobeChat. La capacidad de reconocimiento depende completamente del modelo en sí. Por favor, realiza pruebas para verificar la disponibilidad de esta capacidad en el modelo.",
+          "extra": "Esta configuración solo habilitará la configuración de carga de imágenes en la aplicación; si se admite el reconocimiento depende completamente del modelo en sí. Por favor, prueba la disponibilidad de la capacidad de reconocimiento visual de este modelo.",
           "title": "Soporte de reconocimiento visual"
         }
       }
@@ -98,6 +97,7 @@
       "title": "Usar el modo de solicitud en el cliente"
     },
     "fetcher": {
+      "clear": "Eliminar el modelo obtenido",
       "fetch": "Obtener lista de modelos",
       "fetching": "Obteniendo lista de modelos...",
       "latestTime": "Última actualización: {{time}}",
@@ -175,8 +175,8 @@
       "desc": "Indica si se debe crear automáticamente un tema durante la conversación, solo se aplica en temas temporales",
       "title": "Crear tema automáticamente"
     },
-    "enableCompressThreshold": {
-      "title": "Activar umbral de compresión de longitud de mensajes históricos"
+    "enableCompressHistory": {
+      "title": "Activar resumen automático de mensajes históricos"
     },
     "enableHistoryCount": {
       "alias": "Sin límite",
@@ -372,6 +372,27 @@
       "modelDesc": "Modelo designado para generar el nombre, descripción, avatar y etiquetas del asistente",
       "title": "Generación automática de información del asistente"
     },
+    "customPrompt": {
+      "addPrompt": "Agregar aviso personalizado",
+      "desc": "Al completarlo, el asistente del sistema utilizará el aviso personalizado al generar contenido",
+      "placeholder": "Introduce la palabra clave personalizada",
+      "title": "Palabra clave personalizada"
+    },
+    "historyCompress": {
+      "label": "Modelo de historial de conversación",
+      "modelDesc": "Especifica el modelo utilizado para comprimir el historial de conversación",
+      "title": "Resumen automático del historial de conversación"
+    },
+    "queryRewrite": {
+      "label": "Modelo de reescritura de preguntas",
+      "modelDesc": "Modelo designado para optimizar las preguntas de los usuarios",
+      "title": "Reescritura de preguntas de la base de conocimientos"
+    },
+    "thread": {
+      "label": "Modelo de nombramiento de subtemas",
+      "modelDesc": "Modelo designado para el renombramiento automático de subtemas",
+      "title": "Nombramiento automático de subtemas"
+    },
     "title": "Asistente del sistema",
     "topic": {
       "label": "Modelo de nombramiento de temas",
@@ -390,6 +411,7 @@
     "common": "Configuración común",
     "experiment": "Experimento",
     "llm": "Modelo de lenguaje",
+    "provider": "Proveedor de servicios de IA",
     "sync": "Sincronización en la nube",
     "system-agent": "Asistente del sistema",
     "tts": "Servicio de voz"

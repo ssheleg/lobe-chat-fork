@@ -1,10 +1,9 @@
 import { z } from 'zod';
 
-import { INBOX_SESSION_ID } from '@/const/session';
+import { insertAgentSchema, insertSessionSchema } from '@/database/schemas';
+import { serverDB } from '@/database/server';
 import { SessionModel } from '@/database/server/models/session';
 import { SessionGroupModel } from '@/database/server/models/sessionGroup';
-import { insertAgentSchema, insertSessionSchema } from '@/database/server/schemas/lobechat';
-import { pino } from '@/libs/logger';
 import { authedProcedure, publicProcedure, router } from '@/libs/trpc';
 import { AgentChatConfigSchema } from '@/types/agent';
 import { LobeMetaDataSchema } from '@/types/meta';
@@ -17,8 +16,8 @@ const sessionProcedure = authedProcedure.use(async (opts) => {
 
   return opts.next({
     ctx: {
-      sessionGroupModel: new SessionGroupModel(ctx.userId),
-      sessionModel: new SessionModel(ctx.userId),
+      sessionGroupModel: new SessionGroupModel(serverDB, ctx.userId),
+      sessionModel: new SessionModel(serverDB, ctx.userId),
     },
   });
 });
@@ -58,9 +57,19 @@ export const sessionRouter = router({
       return data?.id;
     }),
 
-  countSessions: sessionProcedure.query(async ({ ctx }) => {
-    return ctx.sessionModel.count();
-  }),
+  countSessions: sessionProcedure
+    .input(
+      z
+        .object({
+          endDate: z.string().optional(),
+          range: z.tuple([z.string(), z.string()]).optional(),
+          startDate: z.string().optional(),
+        })
+        .optional(),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.sessionModel.count(input);
+    }),
 
   createSession: sessionProcedure
     .input(
@@ -86,33 +95,10 @@ export const sessionRouter = router({
         sessions: [],
       };
 
-    const sessionModel = new SessionModel(ctx.userId);
+    const sessionModel = new SessionModel(serverDB, ctx.userId);
 
     return sessionModel.queryWithGroups();
   }),
-
-  getSessionConfig: sessionProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      if (input.id === INBOX_SESSION_ID) {
-        const item = await ctx.sessionModel.findByIdOrSlug(INBOX_SESSION_ID);
-        // if there is no session for user, create one
-        if (!item) {
-          const res = await ctx.sessionModel.createInbox();
-          pino.info('create inbox session', res);
-        }
-      }
-
-      const session = await ctx.sessionModel.findByIdOrSlug(input.id);
-
-      if (!session) throw new Error('Session not found');
-
-      return session.agent;
-    }),
 
   getSessions: sessionProcedure
     .input(
@@ -126,6 +112,10 @@ export const sessionRouter = router({
 
       return ctx.sessionModel.query({ current, pageSize });
     }),
+
+  rankSessions: sessionProcedure.input(z.number().optional()).query(async ({ ctx, input }) => {
+    return ctx.sessionModel.rank(input);
+  }),
 
   removeAllSessions: sessionProcedure.mutation(async ({ ctx }) => {
     return ctx.sessionModel.deleteAll();

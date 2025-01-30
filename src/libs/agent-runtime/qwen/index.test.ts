@@ -2,8 +2,9 @@
 import OpenAI from 'openai';
 import { Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import Qwen from '@/config/modelProviders/qwen';
-import { AgentRuntimeErrorType, ModelProvider } from '@/libs/agent-runtime';
+import { LobeOpenAICompatibleRuntime } from '@/libs/agent-runtime';
+import { ModelProvider } from '@/libs/agent-runtime';
+import { AgentRuntimeErrorType } from '@/libs/agent-runtime';
 
 import * as debugStreamModule from '../utils/debugStream';
 import { LobeQwenAI } from './index';
@@ -16,7 +17,7 @@ const invalidErrorType = AgentRuntimeErrorType.InvalidProviderAPIKey;
 // Mock the console.error to avoid polluting test output
 vi.spyOn(console, 'error').mockImplementation(() => {});
 
-let instance: LobeQwenAI;
+let instance: LobeOpenAICompatibleRuntime;
 
 beforeEach(() => {
   instance = new LobeQwenAI({ apiKey: 'test' });
@@ -40,120 +41,7 @@ describe('LobeQwenAI', () => {
     });
   });
 
-  describe('models', () => {
-    it('should correctly list available models', async () => {
-      const instance = new LobeQwenAI({ apiKey: 'test_api_key' });
-      vi.spyOn(instance, 'models').mockResolvedValue(Qwen.chatModels);
-
-      const models = await instance.models();
-      expect(models).toEqual(Qwen.chatModels);
-    });
-  });
-
   describe('chat', () => {
-    describe('Params', () => {
-      it('should call llms with proper options', async () => {
-        const mockStream = new ReadableStream();
-        const mockResponse = Promise.resolve(mockStream);
-
-        (instance['client'].chat.completions.create as Mock).mockResolvedValue(mockResponse);
-
-        const result = await instance.chat({
-          messages: [{ content: 'Hello', role: 'user' }],
-          model: 'qwen-turbo',
-          temperature: 0.6,
-          top_p: 0.7,
-        });
-
-        // Assert
-        expect(instance['client'].chat.completions.create).toHaveBeenCalledWith(
-          {
-            messages: [{ content: 'Hello', role: 'user' }],
-            model: 'qwen-turbo',
-            temperature: 0.6,
-            stream: true,
-            top_p: 0.7,
-            result_format: 'message',
-          },
-          { headers: { Accept: '*/*' } },
-        );
-        expect(result).toBeInstanceOf(Response);
-      });
-
-      it('should call vlms with proper options', async () => {
-        const mockStream = new ReadableStream();
-        const mockResponse = Promise.resolve(mockStream);
-
-        (instance['client'].chat.completions.create as Mock).mockResolvedValue(mockResponse);
-
-        const result = await instance.chat({
-          messages: [{ content: 'Hello', role: 'user' }],
-          model: 'qwen-vl-plus',
-          temperature: 0.6,
-          top_p: 0.7,
-        });
-
-        // Assert
-        expect(instance['client'].chat.completions.create).toHaveBeenCalledWith(
-          {
-            messages: [{ content: 'Hello', role: 'user' }],
-            model: 'qwen-vl-plus',
-            stream: true,
-          },
-          { headers: { Accept: '*/*' } },
-        );
-        expect(result).toBeInstanceOf(Response);
-      });
-
-      it('should transform non-streaming response to stream correctly', async () => {
-        const mockResponse: OpenAI.ChatCompletion = {
-          id: 'chatcmpl-fc539f49-51a8-94be-8061',
-          object: 'chat.completion',
-          created: 1719901794,
-          model: 'qwen-turbo',
-          choices: [
-            {
-              index: 0,
-              message: { role: 'assistant', content: 'Hello' },
-              finish_reason: 'stop',
-              logprobs: null,
-            },
-          ],
-        };
-        vi.spyOn(instance['client'].chat.completions, 'create').mockResolvedValue(
-          mockResponse as any,
-        );
-
-        const result = await instance.chat({
-          messages: [{ content: 'Hello', role: 'user' }],
-          model: 'qwen-turbo',
-          temperature: 0.6,
-          stream: false,
-        });
-
-        const decoder = new TextDecoder();
-        const reader = result.body!.getReader();
-        const stream: string[] = [];
-
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          stream.push(decoder.decode(value));
-        }
-
-        expect(stream).toEqual([
-          'id: chatcmpl-fc539f49-51a8-94be-8061\n',
-          'event: text\n',
-          'data: "Hello"\n\n',
-          'id: chatcmpl-fc539f49-51a8-94be-8061\n',
-          'event: stop\n',
-          'data: "stop"\n\n',
-        ]);
-
-        expect((await reader.read()).done).toBe(true);
-      });
-    });
-
     describe('Error', () => {
       it('should return QwenBizError with an openai error response when OpenAI.APIError is thrown', async () => {
         // Arrange
@@ -175,7 +63,7 @@ describe('LobeQwenAI', () => {
         try {
           await instance.chat({
             messages: [{ content: 'Hello', role: 'user' }],
-            model: 'qwen-turbo',
+            model: 'qwen-turbo-latest',
             temperature: 0.999,
           });
         } catch (e) {
@@ -215,7 +103,7 @@ describe('LobeQwenAI', () => {
         try {
           await instance.chat({
             messages: [{ content: 'Hello', role: 'user' }],
-            model: 'qwen-turbo',
+            model: 'qwen-turbo-latest',
             temperature: 0.999,
           });
         } catch (e) {
@@ -241,7 +129,8 @@ describe('LobeQwenAI', () => {
 
         instance = new LobeQwenAI({
           apiKey: 'test',
-          baseURL: defaultBaseURL,
+
+          baseURL: 'https://api.abc.com/v1',
         });
 
         vi.spyOn(instance['client'].chat.completions, 'create').mockRejectedValue(apiError);
@@ -250,13 +139,12 @@ describe('LobeQwenAI', () => {
         try {
           await instance.chat({
             messages: [{ content: 'Hello', role: 'user' }],
-            model: 'qwen-turbo',
+            model: 'qwen-turbo-latest',
             temperature: 0.999,
           });
         } catch (e) {
           expect(e).toEqual({
-            /* Desensitizing is unnecessary for a public-accessible gateway endpoint. */
-            endpoint: defaultBaseURL,
+            endpoint: 'https://api.***.com/v1',
             error: {
               cause: { message: 'api is undefined' },
               stack: 'abc',
@@ -276,7 +164,7 @@ describe('LobeQwenAI', () => {
         try {
           await instance.chat({
             messages: [{ content: 'Hello', role: 'user' }],
-            model: 'qwen-turbo',
+            model: 'qwen-turbo-latest',
             temperature: 0.999,
           });
         } catch (e) {
@@ -299,7 +187,7 @@ describe('LobeQwenAI', () => {
         try {
           await instance.chat({
             messages: [{ content: 'Hello', role: 'user' }],
-            model: 'qwen-turbo',
+            model: 'qwen-turbo-latest',
             temperature: 0.999,
           });
         } catch (e) {
@@ -347,7 +235,7 @@ describe('LobeQwenAI', () => {
         // 假设的测试函数调用，你可能需要根据实际情况调整
         await instance.chat({
           messages: [{ content: 'Hello', role: 'user' }],
-          model: 'qwen-turbo',
+          model: 'qwen-turbo-latest',
           stream: true,
           temperature: 0.999,
         });

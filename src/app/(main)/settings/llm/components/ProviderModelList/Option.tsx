@@ -1,3 +1,4 @@
+import { ModelIcon } from '@lobehub/icons';
 import { ActionIcon, Tooltip } from '@lobehub/ui';
 import { Typography } from 'antd';
 import { useTheme } from 'antd-style';
@@ -7,7 +8,6 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Flexbox } from 'react-layout-kit';
 
-import ModelIcon from '@/components/ModelIcon';
 import { ModelInfoTags } from '@/components/ModelSelect';
 import { useUserStore } from '@/store/user';
 import { modelProviderSelectors } from '@/store/user/selectors';
@@ -51,9 +51,9 @@ const OptionRender = memo<OptionRenderProps>(({ displayName, id, provider, isAzu
       </Flexbox>
       {removed && (
         <Tooltip
-          overlayStyle={{ maxWidth: 300 }}
           placement={'top'}
           style={{ pointerEvents: 'none' }}
+          styles={{ root: { maxWidth: 300 } }}
           title={t('ModelSelect.removed')}
         >
           <ActionIcon icon={Recycle} style={{ color: theme.colorWarning }} />

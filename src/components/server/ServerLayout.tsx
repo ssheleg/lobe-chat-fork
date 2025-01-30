@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren } from 'react';
 
-import { isMobileDevice } from '@/utils/responsive';
+import { isMobileDevice } from '@/utils/server/responsive';
 
 interface ServerLayoutProps<T> {
   Desktop: FC<T>;
@@ -9,8 +9,8 @@ interface ServerLayoutProps<T> {
 
 const ServerLayout =
   <T extends PropsWithChildren>({ Desktop, Mobile }: ServerLayoutProps<T>): FC<T> =>
-  (props: T) => {
-    const mobile = isMobileDevice();
+  async (props: T) => {
+    const mobile = await isMobileDevice();
     return mobile ? <Mobile {...props} /> : <Desktop {...props} />;
   };
 

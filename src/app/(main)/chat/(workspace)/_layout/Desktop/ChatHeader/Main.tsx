@@ -1,8 +1,10 @@
 'use client';
 
-import { ActionIcon, Avatar, ChatHeaderTitle } from '@lobehub/ui';
+import { ActionIcon, Avatar } from '@lobehub/ui';
+import { ChatHeaderTitle } from '@lobehub/ui/chat';
 import { Skeleton } from 'antd';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { parseAsBoolean, useQueryState } from 'nuqs';
 import { Suspense, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Flexbox } from 'react-layout-kit';
@@ -21,6 +23,7 @@ const Main = memo(() => {
   const { t } = useTranslation('chat');
 
   useInitAgentConfig();
+  const [isPinned] = useQueryState('pinned', parseAsBoolean);
 
   const [init, isInbox, title, description, avatar, backgroundColor] = useSessionStore((s) => [
     sessionSelectors.isSomeSessionActive(s),
@@ -49,9 +52,9 @@ const Main = memo(() => {
     </Flexbox>
   ) : (
     <Flexbox align={'center'} gap={4} horizontal>
-      {
+      {!isPinned && (
         <ActionIcon
-          aria-label={t('agentsAndConversations')}
+          aria-label={t('agents')}
           icon={showSessionPanel ? PanelLeftClose : PanelLeftOpen}
           onClick={() => {
             updateSystemStatus({
@@ -60,9 +63,9 @@ const Main = memo(() => {
             });
           }}
           size={DESKTOP_HEADER_ICON_SIZE}
-          title={t('agentsAndConversations')}
+          title={t('agents')}
         />
-      }
+      )}
       <Avatar
         avatar={avatar}
         background={backgroundColor}

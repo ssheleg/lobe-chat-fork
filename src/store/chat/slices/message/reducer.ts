@@ -1,8 +1,13 @@
 import isEqual from 'fast-deep-equal';
 import { produce } from 'immer';
 
-import { CreateMessageParams } from '@/services/message';
-import { ChatMessage, ChatPluginPayload, ChatToolPayload } from '@/types/message';
+import {
+  ChatMessage,
+  ChatMessageExtra,
+  ChatPluginPayload,
+  ChatToolPayload,
+  CreateMessageParams,
+} from '@/types/message';
 import { merge } from '@/utils/merge';
 
 interface UpdateMessages {
@@ -96,9 +101,9 @@ export const messagesReducer = (state: ChatMessage[], payload: MessageDispatch):
         if (!message) return;
 
         if (!message.extra) {
-          message.extra = { [key]: value } as any;
+          message.extra = { [key]: value } as ChatMessageExtra;
         } else {
-          message.extra[key] = value;
+          message.extra[key as keyof ChatMessageExtra] = value;
         }
 
         message.updatedAt = Date.now();

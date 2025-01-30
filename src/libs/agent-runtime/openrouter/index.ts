@@ -20,16 +20,17 @@ export const LobeOpenRouterAI = LobeOpenAICompatibleFactory({
       const model = m as unknown as OpenRouterModelCard;
 
       return {
+        contextWindowTokens: model.context_length,
         description: model.description,
         displayName: model.name,
         enabled: LOBE_DEFAULT_MODEL_LIST.find((m) => model.id.endsWith(m.id))?.enabled || false,
-        functionCall: model.description.includes('function calling'),
+        functionCall:
+          model.description.includes('function calling') || model.description.includes('tools'),
         id: model.id,
         maxTokens:
           typeof model.top_provider.max_completion_tokens === 'number'
             ? model.top_provider.max_completion_tokens
             : undefined,
-        tokens: model.context_length,
         vision:
           model.description.includes('vision') ||
           model.description.includes('multimodal') ||

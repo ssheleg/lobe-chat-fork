@@ -1,6 +1,6 @@
 import { metadataModule } from '@/server/metadata';
 import { translation } from '@/server/translation';
-import { isMobileDevice } from '@/utils/responsive';
+import { isMobileDevice } from '@/utils/server/responsive';
 
 import Page from './index';
 
@@ -13,8 +13,8 @@ export const generateMetadata = async () => {
   });
 };
 
-export default () => {
-  const isMobile = isMobileDevice();
+export default async () => {
+  const isMobile = await isMobileDevice();
 
   return <Page mobile={isMobile} />;
 };

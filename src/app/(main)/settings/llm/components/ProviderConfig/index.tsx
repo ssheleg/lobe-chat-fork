@@ -1,5 +1,6 @@
 'use client';
 
+import { ProviderCombine } from '@lobehub/icons';
 import { Form, type FormItemProps, Icon, type ItemGroup, Tooltip } from '@lobehub/ui';
 import { Input, Switch } from 'antd';
 import { createStyles } from 'antd-style';
@@ -9,6 +10,7 @@ import Link from 'next/link';
 import { ReactNode, memo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Center, Flexbox } from 'react-layout-kit';
+import urlJoin from 'url-join';
 
 import { useSyncSettings } from '@/app/(main)/settings/hooks/useSyncSettings';
 import {
@@ -19,7 +21,7 @@ import {
   LLMProviderModelListKey,
 } from '@/app/(main)/settings/llm/const';
 import { FORM_STYLE } from '@/const/layoutTokens';
-import { AES_GCM_URL } from '@/const/url';
+import { AES_GCM_URL, BASE_PROVIDER_DOC_URL } from '@/const/url';
 import { isServerMode } from '@/const/version';
 import { useUserStore } from '@/store/user';
 import { keyVaultsConfigSelectors, modelConfigSelectors } from '@/store/user/selectors';
@@ -66,21 +68,17 @@ const useStyles = createStyles(({ css, prefixCls, responsive, token }) => ({
     }
   `,
   help: css`
+    border-radius: 50%;
+
     font-size: 12px;
     font-weight: 500;
     color: ${token.colorTextDescription};
 
     background: ${token.colorFillTertiary};
-    border-radius: 50%;
 
     &:hover {
       color: ${token.colorText};
       background: ${token.colorFill};
-    }
-  `,
-  safariIconWidthFix: css`
-    svg {
-      width: unset !important;
     }
   `,
 }));
@@ -90,7 +88,6 @@ export interface ProviderConfigProps extends Omit<ModelProviderCard, 'id' | 'cha
   canDeactivate?: boolean;
   checkerItem?: FormItemProps;
   className?: string;
-  docUrl?: string;
   extra?: ReactNode;
   hideSwitch?: boolean;
   id: GlobalLLMProviderKey;
@@ -101,7 +98,7 @@ export interface ProviderConfigProps extends Omit<ModelProviderCard, 'id' | 'cha
     showModelFetcher?: boolean;
   };
   showAceGcm?: boolean;
-  title: ReactNode;
+  title?: ReactNode;
 }
 
 const ProviderConfig = memo<ProviderConfigProps>(
@@ -112,15 +109,15 @@ const ProviderConfig = memo<ProviderConfigProps>(
     showApiKey = true,
     checkModel,
     canDeactivate = true,
-    title,
     checkerItem,
     modelList,
+    title,
     defaultShowBrowserRequest,
     disableBrowserRequest,
     className,
     name,
-    docUrl,
     showAceGcm = true,
+    showChecker = true,
     extra,
   }) => {
     const { t } = useTranslation('setting');
@@ -146,7 +143,7 @@ const ProviderConfig = memo<ProviderConfigProps>(
 
     const apiKeyItem: FormItemProps[] = !showApiKey
       ? []
-      : apiKeyItems ?? [
+      : (apiKeyItems ?? [
           {
             children: (
               <Input.Password
@@ -158,7 +155,7 @@ const ProviderConfig = memo<ProviderConfigProps>(
             label: t(`llm.apiKey.title`),
             name: [KeyVaultsConfigKey, id, LLMProviderApiTokenKey],
           },
-        ];
+        ]);
 
     const aceGcmItem: FormItemProps = {
       children: (
@@ -224,12 +221,14 @@ const ProviderConfig = memo<ProviderConfigProps>(
         label: t('llm.modelList.title'),
         name: [LLMProviderConfigKey, id, LLMProviderModelListKey],
       },
-      checkerItem ?? {
-        children: <Checker model={checkModel!} provider={id} />,
-        desc: t('llm.checker.desc'),
-        label: t('llm.checker.title'),
-        minWidth: undefined,
-      },
+      showChecker
+        ? (checkerItem ?? {
+            children: <Checker model={checkModel!} provider={id} />,
+            desc: t('llm.checker.desc'),
+            label: t('llm.checker.title'),
+            minWidth: undefined,
+          })
+        : undefined,
       showAceGcm && isServerMode && aceGcmItem,
     ].filter(Boolean) as FormItemProps[];
 
@@ -245,15 +244,17 @@ const ProviderConfig = memo<ProviderConfigProps>(
       extra: (
         <Flexbox align={'center'} gap={8} horizontal>
           {extra}
-          {docUrl && (
-            <Tooltip title={t('llm.helpDoc')}>
-              <Link href={docUrl} onClick={(e) => e.stopPropagation()} target={'_blank'}>
-                <Center className={styles.help} height={20} width={20}>
-                  ?
-                </Center>
-              </Link>
-            </Tooltip>
-          )}
+          <Tooltip title={t('llm.helpDoc')}>
+            <Link
+              href={urlJoin(BASE_PROVIDER_DOC_URL, id)}
+              onClick={(e) => e.stopPropagation()}
+              target={'_blank'}
+            >
+              <Center className={styles.help} height={20} width={20}>
+                ?
+              </Center>
+            </Link>
+          </Tooltip>
           {canDeactivate ? (
             <Switch
               onChange={(enabled) => {
@@ -267,7 +268,6 @@ const ProviderConfig = memo<ProviderConfigProps>(
       title: (
         <Flexbox
           align={'center'}
-          className={styles.safariIconWidthFix}
           horizontal
           style={{
             height: 24,
@@ -275,7 +275,7 @@ const ProviderConfig = memo<ProviderConfigProps>(
             ...(enabled ? {} : { filter: 'grayscale(100%)', maxHeight: 24, opacity: 0.66 }),
           }}
         >
-          {title}
+          {title ?? <ProviderCombine provider={id} size={24} />}
         </Flexbox>
       ),
     };
