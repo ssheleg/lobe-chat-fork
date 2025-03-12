@@ -1,5 +1,17 @@
 [
   {
+    "children": {},
+    "date": "2025-03-12",
+    "version": "1.70.9"
+  },
+  {
+    "children": {
+      "fixes": ["Fix theme flicking."]
+    },
+    "date": "2025-03-12",
+    "version": "1.70.8"
+  },
+  {
     "children": {
       "fixes": ["Fix crawl result for short content."]
     },
