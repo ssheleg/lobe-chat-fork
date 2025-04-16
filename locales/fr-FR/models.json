@@ -842,6 +842,9 @@
   "ernie-tiny-8k": {
     "description": "ERNIE Tiny est un modèle de langage à très haute performance développé par Baidu, avec les coûts de déploiement et d'affinage les plus bas parmi les modèles de la série Wenxin."
   },
+  "ernie-x1-32k-preview": {
+    "description": "Le grand modèle Wenxin X1 possède des capacités de compréhension, de planification, de réflexion et d'évolution plus fortes. En tant que modèle de pensée profonde plus complet, Wenxin X1 allie précision, créativité et éloquence, se distinguant particulièrement dans les domaines des questions-réponses en chinois, de la création littéraire, de la rédaction de documents, des dialogues quotidiens, du raisonnement logique, des calculs complexes et de l'appel d'outils."
+  },
   "gemini-1.0-pro-001": {
     "description": "Gemini 1.0 Pro 001 (Ajustement) offre des performances stables et ajustables, ce qui en fait un choix idéal pour des solutions de tâches complexes."
   },
@@ -913,6 +916,9 @@
   },
   "gemini-2.5-pro-exp-03-25": {
     "description": "Gemini 2.5 Pro Experimental est le modèle de pensée le plus avancé de Google, capable de raisonner sur des problèmes complexes en code, mathématiques et dans les domaines STEM, tout en utilisant un long contexte pour analyser de grands ensembles de données, des bibliothèques de code et des documents."
+  },
+  "gemini-2.5-pro-preview-03-25": {
+    "description": "Gemini 2.5 Pro Preview est le modèle de pensée le plus avancé de Google, capable de raisonner sur des problèmes complexes en code, mathématiques et domaines STEM, ainsi que d'analyser de grands ensembles de données, bibliothèques de code et documents en utilisant un long contexte."
   },
   "gemma-7b-it": {
     "description": "Gemma 7B est adapté au traitement de tâches de taille moyenne, alliant coût et efficacité."
@@ -1010,6 +1016,9 @@
   "google/gemma-2b-it": {
     "description": "Gemma Instruct (2B) offre des capacités de traitement d'instructions de base, adapté aux applications légères."
   },
+  "google/gemma-3-27b-it": {
+    "description": "Gemma 3 27B est un modèle de langage open source de Google, qui a établi de nouvelles normes en matière d'efficacité et de performance."
+  },
   "gpt-3.5-turbo": {
     "description": "GPT 3.5 Turbo, adapté à diverses tâches de génération et de compréhension de texte, pointe actuellement vers gpt-3.5-turbo-0125."
   },
@@ -1058,6 +1067,15 @@
   "gpt-4-vision-preview": {
     "description": "Le dernier modèle GPT-4 Turbo dispose de fonctionnalités visuelles. Désormais, les requêtes visuelles peuvent être effectuées en utilisant le mode JSON et les appels de fonction. GPT-4 Turbo est une version améliorée, offrant un soutien rentable pour les tâches multimodales. Il trouve un équilibre entre précision et efficacité, adapté aux applications nécessitant des interactions en temps réel."
   },
+  "gpt-4.1": {
+    "description": "GPT-4.1 est notre modèle phare pour des tâches complexes. Il est particulièrement adapté à la résolution de problèmes interdomaines."
+  },
+  "gpt-4.1-mini": {
+    "description": "GPT-4.1 mini offre un équilibre entre intelligence, rapidité et coût, ce qui en fait un modèle attrayant pour de nombreux cas d'utilisation."
+  },
+  "gpt-4.1-nano": {
+    "description": "GPT-4.1 mini offre un équilibre entre intelligence, rapidité et coût, ce qui en fait un modèle attrayant pour de nombreux cas d'utilisation."
+  },
   "gpt-4.5-preview": {
     "description": "La version de recherche préliminaire de GPT-4.5, qui est notre modèle GPT le plus grand et le plus puissant à ce jour. Il possède une vaste connaissance du monde et comprend mieux les intentions des utilisateurs, ce qui le rend exceptionnel dans les tâches créatives et la planification autonome. GPT-4.5 accepte les entrées textuelles et visuelles et génère des sorties textuelles (y compris des sorties structurées). Il prend en charge des fonctionnalités clés pour les développeurs, telles que les appels de fonctions, l'API par lots et les sorties en continu. GPT-4.5 excelle particulièrement dans les tâches nécessitant créativité, pensée ouverte et dialogue (comme l'écriture, l'apprentissage ou l'exploration de nouvelles idées). La date limite des connaissances est fixée à octobre 2023."
   },
@@ -1099,6 +1117,18 @@
   },
   "grok-2-vision-1212": {
     "description": "Ce modèle a été amélioré en termes de précision, de respect des instructions et de capacités multilingues."
+  },
+  "grok-3-beta": {
+    "description": "Modèle phare, spécialisé dans l'extraction de données, la programmation et le résumé de texte pour des applications d'entreprise, avec une connaissance approfondie des domaines financier, médical, juridique et scientifique."
+  },
+  "grok-3-fast-beta": {
+    "description": "Modèle phare, spécialisé dans l'extraction de données, la programmation et le résumé de texte pour des applications d'entreprise, avec une connaissance approfondie des domaines financier, médical, juridique et scientifique."
+  },
+  "grok-3-mini-beta": {
+    "description": "Modèle léger, qui réfléchit avant de répondre. Rapide et intelligent, il est adapté aux tâches logiques ne nécessitant pas de connaissances approfondies dans un domaine, tout en permettant de capturer les pensées brutes."
+  },
+  "grok-3-mini-fast-beta": {
+    "description": "Modèle léger, qui réfléchit avant de répondre. Rapide et intelligent, il est adapté aux tâches logiques ne nécessitant pas de connaissances approfondies dans un domaine, tout en permettant de capturer les pensées brutes."
   },
   "grok-beta": {
     "description": "Offre des performances comparables à Grok 2, mais avec une efficacité, une vitesse et des fonctionnalités supérieures."
@@ -1568,9 +1598,6 @@
   "openai/o1-preview": {
     "description": "o1 est le nouveau modèle de raisonnement d'OpenAI, adapté aux tâches complexes nécessitant une vaste connaissance générale. Ce modèle dispose d'un contexte de 128K et d'une date limite de connaissance en octobre 2023."
   },
-  "openchat/openchat-7b": {
-    "description": "OpenChat 7B est une bibliothèque de modèles linguistiques open source, affinée par la stratégie de 'C-RLFT (Conditionnal Reinforcement Learning Fine-Tuning)'."
-  },
   "openrouter/auto": {
     "description": "En fonction de la longueur du contexte, du sujet et de la complexité, votre demande sera envoyée à Llama 3 70B Instruct, Claude 3.5 Sonnet (auto-régulé) ou GPT-4o."
   },
@@ -1591,6 +1618,9 @@
   },
   "qvq-72b-preview": {
     "description": "Le modèle QVQ est un modèle de recherche expérimental développé par l'équipe Qwen, axé sur l'amélioration des capacités de raisonnement visuel, en particulier dans le domaine du raisonnement mathématique."
+  },
+  "qvq-max": {
+    "description": "Le modèle de raisonnement visuel QVQ de Tongyi Qianwen prend en charge les entrées visuelles et les sorties de chaînes de pensée, montrant des capacités supérieures dans les domaines des mathématiques, de la programmation, de l'analyse visuelle, de la création et des tâches générales."
   },
   "qwen-coder-plus-latest": {
     "description": "Modèle de code Qwen universel."

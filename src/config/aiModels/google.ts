@@ -10,15 +10,38 @@ const googleChatModels: AIChatModelCard[] = [
     },
     contextWindowTokens: 1_048_576 + 65_536,
     description:
-      'Gemini 2.5 Pro Experimental 是 Google 最先进的思维模型，能够对代码、数学和STEM领域的复杂问题进行推理，还能利用长上下文来分析大型数据集、代码库和文档。',
+      'Gemini 2.5 Pro Experimental 是 Google 最先进的思维模型，能够对代码、数学和STEM领域的复杂问题进行推理，以及使用长上下文分析大型数据集、代码库和文档。',
     displayName: 'Gemini 2.5 Pro Experimental 03-25',
     enabled: true,
     id: 'gemini-2.5-pro-exp-03-25',
     maxOutput: 65_536,
     pricing: {
-      cachedInput: 0,
       input: 0,
       output: 0,
+    },
+    releasedAt: '2025-03-25',
+    settings: {
+      searchImpl: 'params',
+      searchProvider: 'google',
+    },
+    type: 'chat',
+  },
+  {
+    abilities: {
+      functionCall: true,
+      reasoning: true,
+      search: true,
+      vision: true,
+    },
+    contextWindowTokens: 1_048_576 + 65_536,
+    description:
+      'Gemini 2.5 Pro Preview 是 Google 最先进的思维模型，能够对代码、数学和STEM领域的复杂问题进行推理，以及使用长上下文分析大型数据集、代码库和文档。',
+    displayName: 'Gemini 2.5 Pro Preview 03-25 (Paid)',
+    id: 'gemini-2.5-pro-preview-03-25',
+    maxOutput: 65_536,
+    pricing: {
+      input: 1.25, // prompts <= 200k tokens
+      output: 10, // prompts <= 200k tokens
     },
     releasedAt: '2025-03-25',
     settings: {
@@ -150,7 +173,6 @@ const googleChatModels: AIChatModelCard[] = [
   },
   {
     abilities: {
-      imageOutput: true,
       vision: true,
     },
     contextWindowTokens: 1_048_576 + 8192,
@@ -271,6 +293,42 @@ const googleChatModels: AIChatModelCard[] = [
       output: 0.15,
     },
     releasedAt: '2024-10-03',
+    type: 'chat',
+  },
+  {
+    contextWindowTokens: 32_768 + 8192,
+    displayName: 'Gemma 3 1B',
+    id: 'gemma-3-1b-it',
+    maxOutput: 8192,
+    pricing: {
+      cachedInput: 0,
+      input: 0,
+      output: 0,
+    },
+    type: 'chat',
+  },
+  {
+    contextWindowTokens: 32_768 + 8192,
+    displayName: 'Gemma 3 4B',
+    id: 'gemma-3-4b-it',
+    maxOutput: 8192,
+    pricing: {
+      cachedInput: 0,
+      input: 0,
+      output: 0,
+    },
+    type: 'chat',
+  },
+  {
+    contextWindowTokens: 32_768 + 8192,
+    displayName: 'Gemma 3 12B',
+    id: 'gemma-3-12b-it',
+    maxOutput: 8192,
+    pricing: {
+      cachedInput: 0,
+      input: 0,
+      output: 0,
+    },
     type: 'chat',
   },
 ];

@@ -842,6 +842,9 @@
   "ernie-tiny-8k": {
     "description": "ERNIE Tiny is een ultra-presterend groot taalmodel dat de laagste implementatie- en afstemmingskosten heeft binnen de Wenxin modelreeks."
   },
+  "ernie-x1-32k-preview": {
+    "description": "Het Wenxin grote model X1 heeft sterkere capaciteiten in begrip, planning, reflectie en evolutie. Als een dieper denkmodel met bredere mogelijkheden, combineert Wenxin X1 nauwkeurigheid, creativiteit en stijl, en excelleert in Chinese kennisvragen, literaire creatie, tekstschrijven, dagelijkse gesprekken, logische redenering, complexe berekeningen en het aanroepen van tools."
+  },
   "gemini-1.0-pro-001": {
     "description": "Gemini 1.0 Pro 001 (Tuning) biedt stabiele en afstelbare prestaties, ideaal voor oplossingen voor complexe taken."
   },
@@ -913,6 +916,9 @@
   },
   "gemini-2.5-pro-exp-03-25": {
     "description": "Gemini 2.5 Pro Experimental is Google's meest geavanceerde denkmodel, dat in staat is om te redeneren over complexe problemen in code, wiskunde en STEM-gebieden, en bovendien gebruik maakt van lange contexten om grote datasets, codebases en documenten te analyseren."
+  },
+  "gemini-2.5-pro-preview-03-25": {
+    "description": "Gemini 2.5 Pro Preview is Google's meest geavanceerde denkmodel, dat in staat is om te redeneren over complexe problemen in code, wiskunde en STEM-gebieden, en grote datasets, codebases en documenten te analyseren met behulp van lange context."
   },
   "gemma-7b-it": {
     "description": "Gemma 7B is geschikt voor het verwerken van middelgrote taken, met een goede kosteneffectiviteit."
@@ -1010,6 +1016,9 @@
   "google/gemma-2b-it": {
     "description": "Gemma Instruct (2B) biedt basis instructieverwerkingscapaciteiten, geschikt voor lichte toepassingen."
   },
+  "google/gemma-3-27b-it": {
+    "description": "Gemma 3 27B is een open-source taalmodel van Google dat nieuwe normen heeft gesteld op het gebied van efficiëntie en prestaties."
+  },
   "gpt-3.5-turbo": {
     "description": "GPT 3.5 Turbo, geschikt voor verschillende tekstgeneratie- en begrijptaken, wijst momenteel naar gpt-3.5-turbo-0125."
   },
@@ -1058,6 +1067,15 @@
   "gpt-4-vision-preview": {
     "description": "Het nieuwste GPT-4 Turbo-model heeft visuele functies. Nu kunnen visuele verzoeken worden gedaan met behulp van JSON-indeling en functieaanroepen. GPT-4 Turbo is een verbeterde versie die kosteneffectieve ondersteuning biedt voor multimodale taken. Het vindt een balans tussen nauwkeurigheid en efficiëntie, geschikt voor toepassingen die realtime interactie vereisen."
   },
+  "gpt-4.1": {
+    "description": "GPT-4.1 is ons vlaggenschipmodel voor complexe taken. Het is zeer geschikt voor het oplossen van problemen over verschillende domeinen."
+  },
+  "gpt-4.1-mini": {
+    "description": "GPT-4.1 mini biedt een balans tussen intelligentie, snelheid en kosten, waardoor het een aantrekkelijk model is voor veel gebruikssituaties."
+  },
+  "gpt-4.1-nano": {
+    "description": "GPT-4.1 mini biedt een balans tussen intelligentie, snelheid en kosten, waardoor het een aantrekkelijk model is voor veel gebruikssituaties."
+  },
   "gpt-4.5-preview": {
     "description": "De onderzoekspreview van GPT-4.5, ons grootste en krachtigste GPT-model tot nu toe. Het heeft een uitgebreide wereldkennis en kan de intenties van gebruikers beter begrijpen, waardoor het uitblinkt in creatieve taken en autonome planning. GPT-4.5 accepteert tekst- en afbeeldingsinvoer en genereert tekstuitvoer (inclusief gestructureerde uitvoer). Het ondersteunt belangrijke ontwikkelaarsfuncties zoals functieaanroepen, batch-API's en streaminguitvoer. In taken die creativiteit, open denken en dialoog vereisen (zoals schrijven, leren of het verkennen van nieuwe ideeën), presteert GPT-4.5 bijzonder goed. De kennis is bijgewerkt tot oktober 2023."
   },
@@ -1099,6 +1117,18 @@
   },
   "grok-2-vision-1212": {
     "description": "Dit model heeft verbeteringen aangebracht in nauwkeurigheid, instructievolging en meertalige capaciteiten."
+  },
+  "grok-3-beta": {
+    "description": "Vlaggenschipmodel, gespecialiseerd in data-extractie, programmeren en tekstsamenvattingen voor zakelijke toepassingen, met diepgaande kennis in de financiële, medische, juridische en wetenschappelijke sectoren."
+  },
+  "grok-3-fast-beta": {
+    "description": "Vlaggenschipmodel, gespecialiseerd in data-extractie, programmeren en tekstsamenvattingen voor zakelijke toepassingen, met diepgaande kennis in de financiële, medische, juridische en wetenschappelijke sectoren."
+  },
+  "grok-3-mini-beta": {
+    "description": "Lichtgewicht model dat vooraf nadenkt voordat het een gesprek aangaat. Snel en intelligent, geschikt voor logische taken die geen diepgaande domeinkennis vereisen, en kan de oorspronkelijke denksporen vastleggen."
+  },
+  "grok-3-mini-fast-beta": {
+    "description": "Lichtgewicht model dat vooraf nadenkt voordat het een gesprek aangaat. Snel en intelligent, geschikt voor logische taken die geen diepgaande domeinkennis vereisen, en kan de oorspronkelijke denksporen vastleggen."
   },
   "grok-beta": {
     "description": "Biedt prestaties vergelijkbaar met Grok 2, maar met hogere efficiëntie, snelheid en functionaliteit."
@@ -1568,9 +1598,6 @@
   "openai/o1-preview": {
     "description": "o1 is het nieuwe redeneermodel van OpenAI, geschikt voor complexe taken die uitgebreide algemene kennis vereisen. Dit model heeft een context van 128K en een kennisafkapdatum van oktober 2023."
   },
-  "openchat/openchat-7b": {
-    "description": "OpenChat 7B is een open-source taalmodelbibliotheek die is geoptimaliseerd met de 'C-RLFT (Conditionele Versterkingsleer Fijnstelling)' strategie."
-  },
   "openrouter/auto": {
     "description": "Afhankelijk van de contextlengte, het onderwerp en de complexiteit, wordt uw verzoek verzonden naar Llama 3 70B Instruct, Claude 3.5 Sonnet (zelfregulerend) of GPT-4o."
   },
@@ -1591,6 +1618,9 @@
   },
   "qvq-72b-preview": {
     "description": "Het QVQ-model is een experimenteel onderzoeksmodel ontwikkeld door het Qwen-team, gericht op het verbeteren van visuele redeneervaardigheden, vooral in het domein van wiskundige redenering."
+  },
+  "qvq-max": {
+    "description": "De QVQ visuele redeneermodel ondersteunt visuele invoer en denktaken, en toont sterkere capaciteiten in wiskunde, programmeren, visuele analyse, creatie en algemene taken."
   },
   "qwen-coder-plus-latest": {
     "description": "Tongyi Qianwen code model."

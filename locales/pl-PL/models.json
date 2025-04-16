@@ -842,6 +842,9 @@
   "ernie-tiny-8k": {
     "description": "ERNIE Tiny to model językowy o ultra wysokiej wydajności opracowany przez Baidu, charakteryzujący się najniższymi kosztami wdrożenia i dostosowania w serii modeli Wenxin."
   },
+  "ernie-x1-32k-preview": {
+    "description": "Model ERNIE X1 charakteryzuje się silniejszymi zdolnościami w zakresie rozumienia, planowania, refleksji i ewolucji. Jako model głębokiego myślenia o szerszych możliwościach, ERNIE X1 łączy w sobie precyzję, kreatywność i styl, osiągając szczególne wyniki w chińskich pytaniach i odpowiedziach, twórczości literackiej, pisaniu tekstów, codziennych rozmowach, wnioskowaniu logicznym, złożonych obliczeniach oraz wywoływaniu narzędzi."
+  },
   "gemini-1.0-pro-001": {
     "description": "Gemini 1.0 Pro 001 (Tuning) oferuje stabilną i dostosowywalną wydajność, co czyni go idealnym wyborem dla rozwiązań złożonych zadań."
   },
@@ -913,6 +916,9 @@
   },
   "gemini-2.5-pro-exp-03-25": {
     "description": "Gemini 2.5 Pro Experimental to najnowocześniejszy model myślenia Google, zdolny do wnioskowania w zakresie kodu, matematyki i złożonych problemów w dziedzinie STEM, a także do analizy dużych zbiorów danych, repozytoriów kodu i dokumentów, wykorzystując długi kontekst."
+  },
+  "gemini-2.5-pro-preview-03-25": {
+    "description": "Gemini 2.5 Pro Preview to najnowocześniejszy model myślenia Google, zdolny do wnioskowania w zakresie kodu, matematyki i złożonych problemów w dziedzinie STEM, a także do analizy dużych zbiorów danych, repozytoriów kodu i dokumentów przy użyciu długiego kontekstu."
   },
   "gemma-7b-it": {
     "description": "Gemma 7B nadaje się do przetwarzania zadań średniej i małej skali, łącząc efektywność kosztową."
@@ -1010,6 +1016,9 @@
   "google/gemma-2b-it": {
     "description": "Gemma Instruct (2B) oferuje podstawowe możliwości przetwarzania poleceń, idealne do lekkich aplikacji."
   },
+  "google/gemma-3-27b-it": {
+    "description": "Gemma 3 27B to otwarty model językowy stworzony przez Google, który ustanowił nowe standardy w zakresie wydajności i efektywności."
+  },
   "gpt-3.5-turbo": {
     "description": "GPT 3.5 Turbo, odpowiedni do różnych zadań generowania i rozumienia tekstu, obecnie wskazuje na gpt-3.5-turbo-0125."
   },
@@ -1058,6 +1067,15 @@
   "gpt-4-vision-preview": {
     "description": "Najnowszy model GPT-4 Turbo posiada funkcje wizualne. Teraz zapytania wizualne mogą być obsługiwane za pomocą formatu JSON i wywołań funkcji. GPT-4 Turbo to ulepszona wersja, która oferuje opłacalne wsparcie dla zadań multimodalnych. Znajduje równowagę między dokładnością a wydajnością, co czyni go odpowiednim do aplikacji wymagających interakcji w czasie rzeczywistym."
   },
+  "gpt-4.1": {
+    "description": "GPT-4.1 to nasz flagowy model do złożonych zadań. Doskonale nadaje się do rozwiązywania problemów w różnych dziedzinach."
+  },
+  "gpt-4.1-mini": {
+    "description": "GPT-4.1 mini oferuje równowagę między inteligencją, szybkością a kosztami, co czyni go atrakcyjnym modelem w wielu zastosowaniach."
+  },
+  "gpt-4.1-nano": {
+    "description": "GPT-4.1 mini oferuje równowagę między inteligencją, szybkością a kosztami, co czyni go atrakcyjnym modelem w wielu zastosowaniach."
+  },
   "gpt-4.5-preview": {
     "description": "Wersja badawcza GPT-4.5, która jest naszym największym i najpotężniejszym modelem GPT do tej pory. Posiada szeroką wiedzę o świecie i lepiej rozumie intencje użytkowników, co sprawia, że doskonale radzi sobie w zadaniach kreatywnych i autonomicznym planowaniu. GPT-4.5 akceptuje tekstowe i graficzne wejścia oraz generuje wyjścia tekstowe (w tym wyjścia strukturalne). Wspiera kluczowe funkcje dla deweloperów, takie jak wywołania funkcji, API wsadowe i strumieniowe wyjścia. W zadaniach wymagających kreatywności, otwartego myślenia i dialogu (takich jak pisanie, nauka czy odkrywanie nowych pomysłów), GPT-4.5 sprawdza się szczególnie dobrze. Data graniczna wiedzy to październik 2023."
   },
@@ -1099,6 +1117,18 @@
   },
   "grok-2-vision-1212": {
     "description": "Model ten poprawił dokładność, przestrzeganie instrukcji oraz zdolności wielojęzyczne."
+  },
+  "grok-3-beta": {
+    "description": "Flagowy model, specjalizujący się w ekstrakcji danych, programowaniu i podsumowywaniu tekstów w zastosowaniach korporacyjnych, posiadający głęboką wiedzę w dziedzinach takich jak finanse, medycyna, prawo i nauka."
+  },
+  "grok-3-fast-beta": {
+    "description": "Flagowy model, specjalizujący się w ekstrakcji danych, programowaniu i podsumowywaniu tekstów w zastosowaniach korporacyjnych, posiadający głęboką wiedzę w dziedzinach takich jak finanse, medycyna, prawo i nauka."
+  },
+  "grok-3-mini-beta": {
+    "description": "Lekki model, który przed rozmową najpierw przemyśli. Działa szybko i inteligentnie, nadaje się do logicznych zadań, które nie wymagają głębokiej wiedzy w danej dziedzinie, i potrafi uchwycić pierwotne ścieżki myślenia."
+  },
+  "grok-3-mini-fast-beta": {
+    "description": "Lekki model, który przed rozmową najpierw przemyśli. Działa szybko i inteligentnie, nadaje się do logicznych zadań, które nie wymagają głębokiej wiedzy w danej dziedzinie, i potrafi uchwycić pierwotne ścieżki myślenia."
   },
   "grok-beta": {
     "description": "Oferuje wydajność porównywalną z Grok 2, ale z wyższą efektywnością, prędkością i funkcjonalnością."
@@ -1568,9 +1598,6 @@
   "openai/o1-preview": {
     "description": "o1 to nowy model wnioskowania OpenAI, odpowiedni do złożonych zadań wymagających szerokiej wiedzy ogólnej. Model ten ma kontekst 128K i datę graniczną wiedzy z października 2023 roku."
   },
-  "openchat/openchat-7b": {
-    "description": "OpenChat 7B to otwarta biblioteka modeli językowych, dostrojona przy użyciu strategii „C-RLFT (warunkowe uczenie ze wzmocnieniem)”."
-  },
   "openrouter/auto": {
     "description": "W zależności od długości kontekstu, tematu i złożoności, Twoje zapytanie zostanie wysłane do Llama 3 70B Instruct, Claude 3.5 Sonnet (samoregulacja) lub GPT-4o."
   },
@@ -1591,6 +1618,9 @@
   },
   "qvq-72b-preview": {
     "description": "Model QVQ jest eksperymentalnym modelem badawczym opracowanym przez zespół Qwen, skoncentrowanym na zwiększeniu zdolności w zakresie rozumowania wizualnego, szczególnie w dziedzinie rozumowania matematycznego."
+  },
+  "qvq-max": {
+    "description": "Model wizualnego wnioskowania QVQ, wspierający wejścia wizualne oraz wyjścia w postaci łańcucha myślowego, wykazuje silniejsze zdolności w matematyce, programowaniu, analizie wizualnej, twórczości oraz w zadaniach ogólnych."
   },
   "qwen-coder-plus-latest": {
     "description": "Model kodowania Qwen, oparty na ogólnym zrozumieniu."

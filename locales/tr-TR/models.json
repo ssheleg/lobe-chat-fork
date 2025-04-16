@@ -842,6 +842,9 @@
   "ernie-tiny-8k": {
     "description": "ERNIE Tiny, Baidu tarafından geliştirilen ultra yüksek performanslı büyük dil modelidir, dağıtım ve ince ayar maliyetleri Wenxin serisi modelleri arasında en düşüktür."
   },
+  "ernie-x1-32k-preview": {
+    "description": "Wenxin Büyük Model X1, daha güçlü anlama, planlama, düşünme ve evrim yeteneklerine sahiptir. Daha kapsamlı bir derin düşünme modeli olarak, Wenxin X1, doğru, yaratıcı ve edebi bir üslup sunarak, Çince bilgi sorgulama, edebi yaratım, metin yazımı, günlük diyalog, mantıksal akıl yürütme, karmaşık hesaplamalar ve araç çağırma gibi alanlarda özellikle başarılıdır."
+  },
   "gemini-1.0-pro-001": {
     "description": "Gemini 1.0 Pro 001 (Tuning), kararlı ve ayarlanabilir bir performans sunar, karmaşık görev çözümleri için ideal bir seçimdir."
   },
@@ -913,6 +916,9 @@
   },
   "gemini-2.5-pro-exp-03-25": {
     "description": "Gemini 2.5 Pro Deneysel, Google'ın en gelişmiş düşünce modeli olup, kod, matematik ve STEM alanlarındaki karmaşık sorunları akıl yürütebilmektedir. Ayrıca, uzun bağlamları kullanarak büyük veri setlerini, kod havuzlarını ve belgeleri analiz edebilir."
+  },
+  "gemini-2.5-pro-preview-03-25": {
+    "description": "Gemini 2.5 Pro Önizleme, Google'ın en gelişmiş düşünce modeli olup, kod, matematik ve STEM alanlarındaki karmaşık sorunları akıl yürütme yeteneğine sahiptir. Uzun bağlamları analiz ederek büyük veri setleri, kod havuzları ve belgeler üzerinde çalışabilir."
   },
   "gemma-7b-it": {
     "description": "Gemma 7B, orta ölçekli görev işleme için uygundur ve maliyet etkinliği sunar."
@@ -1010,6 +1016,9 @@
   "google/gemma-2b-it": {
     "description": "Gemma Instruct (2B), temel talimat işleme yetenekleri sunar ve hafif uygulamalar için uygundur."
   },
+  "google/gemma-3-27b-it": {
+    "description": "Gemma 3 27B, Google'ın verimlilik ve performans açısından yeni standartlar belirleyen açık kaynaklı bir dil modelidir."
+  },
   "gpt-3.5-turbo": {
     "description": "GPT 3.5 Turbo, çeşitli metin üretimi ve anlama görevleri için uygundur, şu anda gpt-3.5-turbo-0125'e işaret ediyor."
   },
@@ -1058,6 +1067,15 @@
   "gpt-4-vision-preview": {
     "description": "En son GPT-4 Turbo modeli görsel işlevselliğe sahiptir. Artık görsel talepler JSON formatı ve fonksiyon çağrıları ile işlenebilir. GPT-4 Turbo, çok modlu görevler için maliyet etkin bir destek sunan geliştirilmiş bir versiyondur. Doğruluk ve verimlilik arasında bir denge sağlar, gerçek zamanlı etkileşim gerektiren uygulama senaryoları için uygundur."
   },
+  "gpt-4.1": {
+    "description": "GPT-4.1, karmaşık görevler için kullandığımız amiral gemisi modelidir. Farklı alanlarda sorunları çözmek için son derece uygundur."
+  },
+  "gpt-4.1-mini": {
+    "description": "GPT-4.1 mini, zeka, hız ve maliyet arasında bir denge sunarak birçok kullanım durumu için çekici bir model haline getirir."
+  },
+  "gpt-4.1-nano": {
+    "description": "GPT-4.1 mini, zeka, hız ve maliyet arasında bir denge sunarak birçok kullanım durumu için çekici bir model haline getirir."
+  },
   "gpt-4.5-preview": {
     "description": "GPT-4.5'in araştırma önizleme sürümü, şimdiye kadar geliştirdiğimiz en büyük ve en güçlü GPT modelidir. Geniş bir dünya bilgisine sahip olup, kullanıcı niyetlerini daha iyi anlayarak yaratıcı görevler ve bağımsız planlama konularında mükemmel bir performans sergilemektedir. GPT-4.5, metin ve görsel girdi alabilir ve metin çıktısı (yapılandırılmış çıktı dahil) üretebilir. Fonksiyon çağrıları, toplu API ve akış çıktısı gibi önemli geliştirici özelliklerini destekler. Yaratıcılık, açık düşünme ve diyalog gerektiren görevlerde (örneğin yazma, öğrenme veya yeni fikirler keşfetme) GPT-4.5 özellikle başarılıdır. Bilgi kesim tarihi Ekim 2023'tür."
   },
@@ -1099,6 +1117,18 @@
   },
   "grok-2-vision-1212": {
     "description": "Bu model, doğruluk, talimat takibi ve çok dilli yetenekler açısından geliştirilmiştir."
+  },
+  "grok-3-beta": {
+    "description": "Amiral gemisi model, veri çıkarımı, programlama ve metin özeti gibi kurumsal uygulamalarda uzmandır ve finans, sağlık, hukuk ve bilim gibi alanlarda derin bir bilgiye sahiptir."
+  },
+  "grok-3-fast-beta": {
+    "description": "Amiral gemisi model, veri çıkarımı, programlama ve metin özeti gibi kurumsal uygulamalarda uzmandır ve finans, sağlık, hukuk ve bilim gibi alanlarda derin bir bilgiye sahiptir."
+  },
+  "grok-3-mini-beta": {
+    "description": "Hafif model, konuşmadan önce düşünür. Hızlı ve akıllı çalışır, derin alan bilgisi gerektirmeyen mantıksal görevler için uygundur ve ham düşünce izlerini elde edebilir."
+  },
+  "grok-3-mini-fast-beta": {
+    "description": "Hafif model, konuşmadan önce düşünür. Hızlı ve akıllı çalışır, derin alan bilgisi gerektirmeyen mantıksal görevler için uygundur ve ham düşünce izlerini elde edebilir."
   },
   "grok-beta": {
     "description": "Grok 2 ile karşılaştırılabilir performansa sahip, ancak daha yüksek verimlilik, hız ve işlevsellik sunar."
@@ -1568,9 +1598,6 @@
   "openai/o1-preview": {
     "description": "o1, OpenAI'nin geniş genel bilgiye ihtiyaç duyan karmaşık görevler için uygun yeni bir akıl yürütme modelidir. Bu model, 128K bağlam ve Ekim 2023 bilgi kesim tarihi ile donatılmıştır."
   },
-  "openchat/openchat-7b": {
-    "description": "OpenChat 7B, 'C-RLFT (koşullu pekiştirme öğrenimi ince ayarı)' stratejisi ile ince ayar yapılmış açık kaynak dil modeli kütüphanesidir."
-  },
   "openrouter/auto": {
     "description": "Bağlam uzunluğu, konu ve karmaşıklığa göre isteğiniz, Llama 3 70B Instruct, Claude 3.5 Sonnet (kendini ayarlama) veya GPT-4o'ya gönderilecektir."
   },
@@ -1591,6 +1618,9 @@
   },
   "qvq-72b-preview": {
     "description": "QVQ modeli, Qwen ekibi tarafından geliştirilen deneysel bir araştırma modelidir; görsel akıl yürütme yeteneğini artırmaya odaklanır, özellikle matematik akıl yürütme alanında."
+  },
+  "qvq-max": {
+    "description": "Genel Amaçlı QVQ Görsel Akıl Yürütme Modeli, görsel girdi ve düşünce zinciri çıktısını destekler. Matematik, programlama, görsel analiz, yaratıcılık ve genel görevlerde daha güçlü yetenekler sergilemektedir."
   },
   "qwen-coder-plus-latest": {
     "description": "Tongyi Qianwen kod modeli."
